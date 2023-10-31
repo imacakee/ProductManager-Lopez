@@ -1,8 +1,3 @@
-// aspectos a incluir:
-
-// -debe contar con un metodo addProduct el cual arregara un producto al arreglo inicial
-// -todos los campos obligatorios
-
 class ProductManager {
   constructor() {
     this.products = [];
@@ -19,6 +14,13 @@ class ProductManager {
   }
 
   addProduct(product) {
+    const valueList = Object.values(product);
+
+    if (valueList.some((value) => value == null || value == undefined)) {
+      console.log("el objeto no puede contener campos null o undefined");
+      return;
+    }
+
     if (this.products.length > 0) {
       product.id = this.products[this.products.length - 1].id + 1;
     } else {
@@ -42,6 +44,5 @@ class Product {
     this.thumbnail = thumbnail;
     this.code = code;
     this.stock = stock;
-    this.id = null;
   }
 }
