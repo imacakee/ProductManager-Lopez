@@ -38,7 +38,7 @@ class ProductManager {
   addProduct(product) {
     const valueList = Object.values(product);
 
-    if (valueList.some((value) => value == null || value == undefined)) {
+    if (valueList.some((value) => value == null || value == undefined || value == "")) {
       console.log("el objeto no puede contener campos null o undefined");
       return;
     }
@@ -87,3 +87,4 @@ class Product {
     this.stock = stock;
   }
 }
+
