@@ -1,5 +1,4 @@
-const fs = require("fs");
-const path = "./products/products.txt";
+const fs = require("fs").promises;
 
 class ProductManager {
   constructor(path) {
@@ -7,9 +6,9 @@ class ProductManager {
     this.products = this.fetchData();
   }
 
-  fetchData() {
+  async fetchData() {
     try {
-      const fileContent = fs.readFileSync(this.path, "utf-8");
+      const fileContent = await fs.readFile(this.path, "utf-8");
       if (fileContent?.length) {
         return JSON.parse(fileContent);
       } else {
@@ -21,29 +20,32 @@ class ProductManager {
     }
   }
 
-  writeData() {
-    fs.writeFileSync(this.path, JSON.stringify(this.products));
+  async writeData() {
+    return await fs.writeFile(this.path, JSON.stringify(this.products));
   }
 
-  getProducts() {
-    return this.fetchData();
+  async getProducts() {
+    return await this.fetchData();
   }
 
-  getProductById(id) {
-    return (
-      this.fetchData().find((prd) => prd.id == id) || console.log("not found")
-    );
+  async getProductById(id) {
+    const productList = await this.fetchData();
+    return productList.find((prd) => prd.id == id) || console.log("not found");
   }
 
-  addProduct(product) {
+  async addProduct(product) {
     const valueList = Object.values(product);
 
-    if (valueList.some((value) => value == null || value == undefined || value == "")) {
+    if (
+      valueList.some(
+        (value) => value == null || value == undefined || value == ""
+      )
+    ) {
       console.log("el objeto no puede contener campos null o undefined");
       return;
     }
 
-    const productsList = this.fetchData();
+    const productsList = await this.fetchData();
 
     if (productsList.length > 0) {
       product.id = productsList[productsList.length - 1].id + 1;
@@ -56,24 +58,26 @@ class ProductManager {
     } else {
       productsList.push(product);
       this.products = productsList;
-      this.writeData();
+      await this.writeData();
     }
   }
 
-  updateProduct(id, newProduct) {
+  async updateProduct(id, newProduct) {
     let prod = this.getProductById(id);
     prod = { ...prod, ...newProduct, id };
-    const productsList = this.fetchData();
+    const productsList = await this.fetchData();
     const foundIndex = productsList.findIndex((prd) => prd.id == id);
     productsList[foundIndex] = prod;
     this.products = productsList;
 
-    this.writeData();
+    await this.writeData();
   }
 
-  deleteProduct(id) {
-    this.products = this.fetchData().filter((product) => product.id != id);
-    this.writeData();
+  async deleteProduct(id) {
+    this.products = await this.fetchData().filter(
+      (product) => product.id != id
+    );
+    await this.writeData();
   }
 }
 
@@ -88,3 +92,4 @@ class Product {
   }
 }
 
+module.exports = { Product, ProductManager };
