@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { ProductManager, Product } = require("../../index");
+const { ProductManager, Product } = require("../../products");
 const PATH = "products/products.txt";
 const pm = new ProductManager(PATH);
 

@@ -1,5 +1,3 @@
-const { ok } = require("assert");
-
 const fs = require("fs").promises;
 
 class ProductManager {
@@ -32,7 +30,11 @@ class ProductManager {
 
   async getProductById(id) {
     const productList = await this.getProducts();
-    return productList.find((prd) => prd.id == id) || console.log("not found");
+    return (
+      productList.find((prd) => prd.id == id) || {
+        message: "product not found",
+      }
+    );
   }
 
   async addProduct(product) {
