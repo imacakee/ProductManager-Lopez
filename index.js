@@ -1,3 +1,5 @@
+const { ok } = require("assert");
+
 const fs = require("fs").promises;
 
 class ProductManager {
@@ -29,20 +31,19 @@ class ProductManager {
   }
 
   async getProductById(id) {
-    const productList = await this.fetchData();
+    const productList = await this.getProducts();
     return productList.find((prd) => prd.id == id) || console.log("not found");
   }
 
   async addProduct(product) {
     const valueList = Object.values(product);
-
+    //TO DO!!!! THUMBNAIL CAN BE NULL (object.keys??)
     if (
       valueList.some(
         (value) => value == null || value == undefined || value == ""
       )
     ) {
-      console.log("el objeto no puede contener campos null o undefined");
-      return;
+      return { error: "el objeto no puede contener campos null o undefined" };
     }
 
     const productsList = await this.getProducts();
@@ -54,48 +55,49 @@ class ProductManager {
     }
 
     if (productsList.some((prd) => prd.code == product.code)) {
-      console.log(`el código ${product.code} ya existe`);
+      return { error: `el código ${product.code} ya existe` };
     } else {
       productsList.push(product);
       this.products = productsList;
       await this.writeData();
+      return product;
     }
   }
 
   async updateProduct(id, newProduct) {
-    let prod = this.getProductById(id);
-    prod = { ...prod, ...newProduct, id };
-    const productsList = await this.getProducts();
-    const foundIndex = productsList.findIndex((prd) => prd.id == id);
-    productsList[foundIndex] = prod;
-    this.products = productsList;
+    try {
+      let prod = await this.getProductById(id);
+      prod = { ...prod, ...newProduct, id };
+      const productsList = await this.getProducts();
+      const foundIndex = productsList.findIndex((prd) => prd.id == id);
+      productsList[foundIndex] = prod;
+      this.products = productsList;
 
-    await this.writeData();
+      await this.writeData();
+      return prod;
+    } catch (error) {
+      return { error };
+    }
   }
 
   async deleteProduct(id) {
-    this.products = await this.getProducts().filter(
-      (product) => product.id != id
-    );
-    await this.writeData();
+    try {
+      const prdList = await this.getProducts();
+      this.products = prdList.filter((prd) => prd.id != id);
+      await this.writeData();
+      return { message: "Ok" };
+    } catch (error) {
+      return { error };
+    }
   }
 }
 
 class Product {
-  constructor(
-    title,
-    description,
-    price,
-    status,
-    thumbnail,
-    code,
-    stock,
-    category
-  ) {
+  constructor(title, description, price, thumbnail, code, stock, category) {
     this.title = title;
     this.description = description;
     this.price = price;
-    this.status = status;
+    this.status = true;
     this.thumbnail = thumbnail;
     this.code = code;
     this.stock = stock;
