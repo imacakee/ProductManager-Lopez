@@ -45,7 +45,7 @@ class ProductManager {
       return;
     }
 
-    const productsList = await this.fetchData();
+    const productsList = await this.getProducts();
 
     if (productsList.length > 0) {
       product.id = productsList[productsList.length - 1].id + 1;
@@ -65,7 +65,7 @@ class ProductManager {
   async updateProduct(id, newProduct) {
     let prod = this.getProductById(id);
     prod = { ...prod, ...newProduct, id };
-    const productsList = await this.fetchData();
+    const productsList = await this.getProducts();
     const foundIndex = productsList.findIndex((prd) => prd.id == id);
     productsList[foundIndex] = prod;
     this.products = productsList;
@@ -74,7 +74,7 @@ class ProductManager {
   }
 
   async deleteProduct(id) {
-    this.products = await this.fetchData().filter(
+    this.products = await this.getProducts().filter(
       (product) => product.id != id
     );
     await this.writeData();
@@ -82,13 +82,24 @@ class ProductManager {
 }
 
 class Product {
-  constructor(title, description, price, thumbnail, code, stock) {
+  constructor(
+    title,
+    description,
+    price,
+    status,
+    thumbnail,
+    code,
+    stock,
+    category
+  ) {
     this.title = title;
     this.description = description;
     this.price = price;
+    this.status = status;
     this.thumbnail = thumbnail;
     this.code = code;
     this.stock = stock;
+    this.category = category;
   }
 }
 
