@@ -1,7 +1,7 @@
 const express = require("express");
 const { ProductManager } = require("..");
 const PATH = "products/products.txt";
-const PORT = 5000;
+const PORT = 8080;
 const app = express();
 const pm = new ProductManager(PATH);
 
