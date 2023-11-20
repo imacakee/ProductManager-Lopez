@@ -2,6 +2,13 @@ const fs = require("fs").promises;
 
 class Cart {
   constructor(products) {
+    //la lista products tendra el siguiente formato:
+    // [
+    //   {
+    //    product: 1 // id del producto
+    //    quantity: 10// cantidad del producto en el carrito
+    //   }
+    // ]
     this.products = products;
   }
 }
@@ -26,7 +33,7 @@ class CartManager {
   }
 
   async writeData() {
-    return await fs.writeFile(this.path, JS0N.stringify(this.carts));
+    return await fs.writeFile(this.path, JSON.stringify(this.carts));
   }
 
   async getCarts() {
@@ -43,6 +50,7 @@ class CartManager {
   }
 
   async createCart(products) {
+    console.log(this.carts);
     const cart = new Cart(products);
     const cartList = await this.getCarts();
 
@@ -52,21 +60,35 @@ class CartManager {
       cart.id = 1;
     }
 
-    this.carts.push(cart);
+    cartList.push(cart);
+    this.carts = cartList;
     await this.writeData();
     return cart;
   }
 
-  async addProduct(cartId, pid) {
+  async addProduct(cartId, pid, quantity) {
     const cart = await this.getCartById(cartId);
-    cart.products.push(pid);
+    const cartList = await this.getCarts();
+
+    console;
+    if (cart.products.find((prd) => prd.product == pid)) {
+      const i = cart.products.findIndex((prd) => prd.product == pid);
+      cart.products[i].quantity += quantity;
+    } else {
+      cart.products.push({ product: pid, quantity });
+    }
+
+    const cartIndex = cartList.findIndex((cart) => cart.id == cartId);
+    cartList[cartIndex] = cart;
+    this.carts = cartList;
+
     await this.writeData();
     return cart;
   }
 
-  async removeProductI(cartId, pid) {
+  async removeProduct(cartId, pid) {
     const cart = await this.getCartById(cartId);
-    cart.products = cart.products.filter((prd) => prd != pid);
+    cart.products = cart.products.filter((prd) => prd.product != pid);
     await this.writeData();
     return cart;
   }
