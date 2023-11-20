@@ -86,11 +86,27 @@ class CartManager {
     return cart;
   }
 
-  async removeProduct(cartId, pid) {
-    const cart = await this.getCartById(cartId);
-    cart.products = cart.products.filter((prd) => prd.product != pid);
-    await this.writeData();
-    return cart;
+  async removeProduct(cartId, pid, quantity) {
+    try {
+      const cart = await this.getCartById(cartId);
+      let cartList = await this.getCarts();
+
+      const i = cart.products.findIndex((prd) => prd.product == pid);
+
+      if (cart.products[i].quantity - quantity <= 0) {
+        cart.products = cart.products.filter((prd) => prd.product != pid);
+      } else {
+        cart.products[i].quantity -= quantity;
+      }
+
+      const cartIndex = cartList.findIndex((cart) => cart.id == cartId);
+      cartList[cartIndex] = cart;
+      this.carts = cartList;
+      await this.writeData();
+      return cart;
+    } catch (error) {
+      return { error };
+    }
   }
 
   async deleteCart(cartId) {

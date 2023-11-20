@@ -26,4 +26,9 @@ router.post("/:cid/product/:pid", async (req, res) => {
   res.json(result);
 });
 
+router.put("/:cid/product/:pid", async (req, res) => {
+  const result = await cm.removeProduct(req.params.cid, req.params.pid, 1);
+  res.json(result);
+});
+
 module.exports = router;
