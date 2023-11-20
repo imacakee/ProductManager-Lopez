@@ -2,13 +2,6 @@ const fs = require("fs").promises;
 
 class Cart {
   constructor(products) {
-    //la lista products tendra el siguiente formato:
-    // [
-    //   {
-    //    product: 1 // id del producto
-    //    quantity: 10// cantidad del producto en el carrito
-    //   }
-    // ]
     this.products = products;
   }
 }
