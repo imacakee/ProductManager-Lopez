@@ -38,13 +38,9 @@ class ProductManager {
   }
 
   async addProduct(product) {
-    const valueList = Object.values(product);
-    //TO DO!!!! THUMBNAIL CAN BE NULL (object.keys??)
-    if (
-      valueList.some(
-        (value) => value == null || value == undefined || value == ""
-      )
-    ) {
+    const keyList = Object.keys(product);
+
+    if (keyList.some((key) => !product[key] && key != "thumbnail")) {
       return { error: "el objeto no puede contener campos null o undefined" };
     }
 
