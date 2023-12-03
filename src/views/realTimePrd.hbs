@@ -1,0 +1,32 @@
+<form id="frm_product">
+  <input type="text" name="title" id="title" placeholder="title" />
+  <input
+    type="text"
+    name="description"
+    id="description"
+    placeholder="description"
+  />
+  <input type="number" name="price" id="price" placeholder="price" />
+  <input type="text" name="thumbnail" id="thumbnail" placeholder="thumbnail" />
+  <input type="text" name="code" id="code" placeholder="code" />
+  <input type="text" name="stock" id="stock" placeholder="stock" />
+  <input type="text" name="category" id="category" placeholder="category" />
+
+  <input type="submit" name="id" id="id" placeholder="Submit" />
+</form>
+<table class="tbl_productos">
+  <tr>
+    <th>Title</th>
+    <th>Description</th>
+    <th>Price</th>
+    <th>status</th>
+    <th>thumbnail</th>
+    <th>code</th>
+    <th>stock</th>
+    <th>category</th>
+    <th>id</th>
+  </tr>
+</table>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="/js/main.js"></script>
