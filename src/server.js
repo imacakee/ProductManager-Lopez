@@ -1,8 +1,9 @@
 const express = require("express");
 const handlebars = require("express-handlebars");
-const viewsRouter = require("./routes/views.router.js");
+const mongoose = require("mongoose");
+const viewsRouter = require("./routes/views.routes.js");
 const { Server } = require("socket.io");
-const { ProductManager, Product } = require("../products");
+const { ProductManager, Product } = require("../products.js");
 const PATH = "products/products.txt";
 const pm = new ProductManager(PATH);
 
@@ -15,9 +16,19 @@ const httpServer = app.listen(PORT, () =>
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-const productRouter = require("./routes/products.router");
-const cartRouter = require("./routes/cart.router");
+const productRouter = require("./routes/products.routes.js");
+const cartRouter = require("./routes/cart.routes.js");
 const io = new Server(httpServer);
+
+mongoose
+  .connect("mongodb://0.0.0.0:27017/apidb", {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
+  .then((db) => console.log("Db is connected"))
+  .catch((error) => console.log(error));
+
+module.exports = mongoose;
 
 app.engine(
   "hbs",
