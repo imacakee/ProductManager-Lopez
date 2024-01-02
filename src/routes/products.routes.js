@@ -3,8 +3,8 @@ const router = Router();
 const productDao = require("../daos/dbManager/product.dao");
 
 router.get("/", async (req, res) => {
-  const { limit } = req.query;
-  const result = await productDao.getProducts(limit);
+  const { page, limit, category, sort } = req.query;
+  const result = await productDao.getProducts(limit, page, sort, category);
   res.json(result);
 });
 

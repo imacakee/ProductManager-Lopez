@@ -9,11 +9,13 @@ class ProductDao {
     }
   }
 
-  async getProducts(limit) {
-    if (limit) {
-      return await productModel.find.limit(limit);
-    }
-    return await productModel.find();
+  async getProducts(limit, page, sort, category) {
+    const query = category ? { category } : {};
+    return await productModel.paginate(query, {
+      limit: limit || 10,
+      page: page || 1,
+      sort,
+    });
   }
 
   async getProductById(id) {
