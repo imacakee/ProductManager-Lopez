@@ -9,37 +9,52 @@ class CartDao {
     }
   }
 
-  async getCarts(limit) {
-    if (limit) {
-      return await cartModel.find.limit(limit);
-    }
-    return await cartModel.find();
+  async getCarts({ limit, page }) {
+    return await cartModel.paginate(
+      {},
+      {
+        limit: limit || 10,
+        page: page || 1,
+        populate: { path: "items", populate: { path: "product" } },
+      }
+    );
   }
 
   async getCartById(id) {
     return await cartModel.findById(id);
   }
 
-  async updateCart(id, productId, amountToModify) {
+  async modifyProduct(id, productId, amountToModify) {
     try {
       const cart = await cartModel.findById(id);
       const item = cart.items.find((item) => item.product == productId);
-      let updatedCart = cart.items;
       if (item) {
-        item.quantity += amountToModify;
+        item.quantity += +amountToModify;
         const indexOfItem = cart.items.indexOf(item);
-        if (item.quantity <= 0) updatedCart = cart.items.splice(indexOfItem, 1);
-        else updatedCart = cart.items.splice(indexOfItem, 1, item);
+        if (item.quantity <= 0) {
+          cart.items.splice(indexOfItem, 1);
+        } else cart.items.splice(indexOfItem, 1, item);
+      } else if (+amountToModify > 0) {
+        const newProd = { product: productId, quantity: amountToModify };
+        if (cart.items) {
+          cart.items.push(newProd);
+        } else {
+          cart.items = [newProd];
+        }
       }
-      console.log("el carrito anachi", updatedCart);
       return await cartModel.findByIdAndUpdate(
         id,
-        { items: updatedCart },
+        { items: cart.items },
         { new: true }
       );
     } catch (error) {
       console.log(error);
     }
+  }
+
+  async updateCart(id, newCart) {
+    console.log(newCart);
+    return await cartModel.findByIdAndUpdate(id, newCart, { new: true });
   }
 
   async deleteCart(id) {

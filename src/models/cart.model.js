@@ -1,4 +1,5 @@
 const { Schema, model } = require("mongoose");
+const mongoosePaginate = require("mongoose-paginate-v2");
 
 const cartSchema = new Schema({
   items: [
@@ -8,6 +9,8 @@ const cartSchema = new Schema({
     },
   ],
 });
+
+cartSchema.plugin(mongoosePaginate);
 
 const cartModel = model("carts", cartSchema);
 
