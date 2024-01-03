@@ -53,7 +53,6 @@ class CartDao {
   }
 
   async updateCart(id, newCart) {
-    console.log(newCart);
     return await cartModel.findByIdAndUpdate(id, newCart, { new: true });
   }
 
