@@ -10,4 +10,9 @@ router.get("/realTimeProducts", (req, res) => {
   res.render("realTimePrd", {});
 });
 
+router.get("/products", (req, res) => {
+  res.render("products", {});
+});
+
 module.exports = router;
+

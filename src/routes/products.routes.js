@@ -1,6 +1,6 @@
 const { Router } = require("express");
 const router = Router();
-const productDao = require("../daos/dbManager/product.dao");
+const productDao = require("../Daos/DbManager/product.dao");
 
 router.get("/", async (req, res) => {
   const { page, limit, category, sort } = req.query;

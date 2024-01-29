@@ -1,0 +1,49 @@
+<div>
+  <h1>Create new product</h1>
+  <label for="title">Title</label><br />
+  <input type="text" id="prd_title" name="title" />
+  <br /><br />
+  <label for="description">Description</label><br />
+  <input type="text" id="prd_description" name="description" />
+  <br /><br />
+  <label for="price">Price</label><br />
+  <input type="text" id="prd_price" name="price" />
+  <br /><br />
+  <label for="thumbnail">Thumbnail</label><br />
+  <input type="text" id="prd_thumbnail" name="thumbnail" /><br /><br />
+  <label for="code">Code</label><br />
+  <input type="text" id="prd_code" name="code" />
+  <br /><br />
+  <label for="stock">Stock</label><br />
+  <input type="text" id="prd_stock" name="stock" />
+  <br /><br />
+  <label for="category">Category</label><br />
+  <input type="text" id="prd_category" name="category" />
+  <br /><br />
+  <button onClick="submitForm()">Submit</button>
+  <hr />
+</div>
+<table>
+  <thead>
+    <tr>
+      <th>title</th>
+      <th>price</th>
+      <th>status</th>
+      <th>code</th>
+      <th>stock</th>
+      <th>category</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody id="product_container">
+
+  </tbody>
+</table>
+<div
+  id="product_pages"
+  style="display: flex; align-items:center; justify-content:space-around"
+>
+
+</div>
+
+<script src="/js/products.js"></script>
