@@ -38,7 +38,6 @@ const submitForm = () => {
 };
 
 const loadProducts = (response) => {
-  console.log(response);
   const pagesContainer = document.getElementById("product_pages");
   for (let page = 1; page <= response.totalPages; page++) {
     pagesContainer.innerHTML += `<a href="/products?page=${page}">${page}</a>`;
@@ -61,8 +60,6 @@ const loadProducts = (response) => {
 };
 
 const addProduct = (prdId) => {
-  console.log(prdId);
-  console.log(cartId);
   fetch(`/api/carts/${cartId}/product/${prdId}?amount=1`, {
     method: "PUT",
     headers: {
@@ -79,29 +76,3 @@ const deleteProduct = (prdId) => {
     },
   }).then(() => location.reload());
 };
-
-// form.addEventListener('submit',e=>{
-//     e.preventDefault();
-//     const data = new FormData(form);
-//     console.log(data);
-//     const obj = {};
-//     data.forEach((value,key)=>obj[key]=value);
-//     console.log("Objeto formado:");
-//     console.log(obj);
-//     fetch('/api/extend/users/register',{
-//         method:'POST',
-//         body:JSON.stringify(obj),
-//         headers:{
-//             'Content-Type':'application/json'
-//         }
-//     }).then(result=> {
-//         if (result.status === 201) {
-//             result.json();
-//             alert("Usuario creado con exito!");
-//             window.location.replace('/users/login');
-//         }else {
-//             alert("No se pudo crear el usuario!");
-//         }
-//     }).then(
-//         json=>console.log(json));
-// // })

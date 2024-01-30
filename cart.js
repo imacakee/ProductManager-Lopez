@@ -43,7 +43,6 @@ class CartManager {
   }
 
   async createCart(products) {
-    console.log(this.carts);
     const cart = new Cart(products);
     const cartList = await this.getCarts();
 
