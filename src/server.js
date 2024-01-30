@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const handlebars = require("express-handlebars");
 const mongoose = require("mongoose");
@@ -7,16 +8,18 @@ const { ProductManager, Product } = require("../products.js");
 const PATH = "products/products.txt";
 const pm = new ProductManager(PATH);
 const session = require("express-session");
+const cookieParser = require("cookie-parser");
+const passport = require("passport");
+const initializePassport = require("./config/passport.config.js");
+
 const MongoStore = require("connect-mongo");
 const sessionsRouter = require("./routes/sessions.router.js");
 const usersViewRouter = require("./routes/users.views.router.js");
 
 const app = express();
-const PORT = 8080;
-const httpServer = app.listen(PORT, () =>
-  console.log(`Server listening on port ${PORT}`)
+const httpServer = app.listen(process.env.PORT, () =>
+  console.log(`Server listening on port ${process.env.PORT}`)
 );
-const MONGO_URL = "mongodb://0.0.0.0:27017/apidb";
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -36,7 +39,7 @@ app.engine(
 app.use(
   session({
     store: MongoStore.create({
-      mongoUrl: MONGO_URL,
+      mongoUrl: process.env.MONGO_URL,
       mongoOptions: { useNewUrlParser: true, useUnifiedTopology: true },
       ttl: 10 * 60,
     }),
@@ -47,8 +50,15 @@ app.use(
   })
 );
 
+//Cookies
+app.use(cookieParser("CoderS3cr3tC0d3"));
+
+//Middlewares Passport
+initializePassport();
+app.use(passport.initialize());
+
 mongoose
-  .connect(MONGO_URL, {
+  .connect(process.env.MONGO_URL, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
