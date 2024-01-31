@@ -24,9 +24,4 @@ form.addEventListener("submit", (e) => {
       }
     })
     .then((json) => console.log(json));
-  // .then((result) => {
-  //   if (result.status === 200) {
-  //     window.location.replace("/users/login");
-  //   }
-  // });
 });

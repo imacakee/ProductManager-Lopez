@@ -1,17 +1,30 @@
 let cartId;
+let authToken;
+
+const getCookies = () => {
+  const pairs = document.cookie.split(";");
+  const cookies = {};
+  pairs.forEach((pair) => {
+    const splittedPairs = pair.split("=");
+    cookies[splittedPairs[0].trim()] = splittedPairs[1].trim();
+  });
+  return cookies;
+};
 
 window.addEventListener("load", (event) => {
+  const cookies = getCookies();
+  cartId = localStorage.getItem("cartId") || cookies.cartId;
+  authToken = localStorage.getItem("authToken") || cookies.jwtCookieToken;
   const searchParams = new URLSearchParams(window.location.search);
   const page = searchParams.get("page") || null;
   fetch(`/api/products${page ? `?page=${page}` : ""}`, {
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+      Authorization: `Bearer ${authToken}`,
     },
   })
     .then((result) => result.json())
     .then((res) => loadProducts(res));
-  cartId = localStorage.getItem("cartId");
 });
 
 const submitForm = () => {
@@ -35,7 +48,7 @@ const submitForm = () => {
     }),
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+      Authorization: `Bearer ${authToken}`,
     },
   }).then(() => location.reload());
 };
@@ -67,7 +80,7 @@ const addProduct = (prdId) => {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+      Authorization: `Bearer ${authToken}`,
     },
   }).then((result) => console.log(result));
 };
@@ -77,7 +90,7 @@ const deleteProduct = (prdId) => {
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+      Authorization: `Bearer ${authToken}`,
     },
   }).then(() => location.reload());
 };

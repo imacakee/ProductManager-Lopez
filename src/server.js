@@ -1,20 +1,21 @@
 require("dotenv").config();
 const express = require("express");
 const handlebars = require("express-handlebars");
+const passport = require("passport");
 const mongoose = require("mongoose");
-const viewsRouter = require("./routes/views.routes.js");
 const { Server } = require("socket.io");
-const { ProductManager, Product } = require("../products.js");
-const PATH = "products/products.txt";
-const pm = new ProductManager(PATH);
 const session = require("express-session");
 const cookieParser = require("cookie-parser");
-const passport = require("passport");
-const initializePassport = require("./config/passport.config.js");
-
 const MongoStore = require("connect-mongo");
+const initializePassport = require("./config/passport.config.js");
+const viewsRouter = require("./routes/views.routes.js");
+const githubLoginViewRouter = require("./routes/github-log.views.js");
 const sessionsRouter = require("./routes/sessions.router.js");
 const usersViewRouter = require("./routes/users.views.router.js");
+const { ProductManager, Product } = require("../products.js");
+
+const PATH = "products/products.txt";
+const pm = new ProductManager(PATH);
 
 const app = express();
 const httpServer = app.listen(process.env.PORT, () =>
@@ -50,10 +51,8 @@ app.use(
   })
 );
 
-//Cookies
 app.use(cookieParser("CoderS3cr3tC0d3"));
 
-//Middlewares Passport
 initializePassport();
 app.use(passport.initialize());
 
@@ -74,10 +73,11 @@ app.use(express.static(__dirname + "/public"));
 
 app.use("/api/products", productRouter);
 
+app.use("/", viewsRouter);
 app.use("/api/carts", cartRouter);
 app.use("/users", usersViewRouter);
 app.use("/api/sessions", sessionsRouter);
-app.use("/", viewsRouter);
+app.use("/github", githubLoginViewRouter);
 
 io.on("connection", async (socket) => {
   socket.on("product_send", async (product) => {
