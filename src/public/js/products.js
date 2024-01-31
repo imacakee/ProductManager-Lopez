@@ -3,13 +3,15 @@ let cartId;
 window.addEventListener("load", (event) => {
   const searchParams = new URLSearchParams(window.location.search);
   const page = searchParams.get("page") || null;
-  fetch(`/api/products${page ? `?page=${page}` : ""}`)
+  fetch(`/api/products${page ? `?page=${page}` : ""}`, {
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+    },
+  })
     .then((result) => result.json())
     .then((res) => loadProducts(res));
-
-  fetch("/api/carts")
-    .then((result) => result.json())
-    .then((res) => (cartId = res.docs[0]._id));
+  cartId = localStorage.getItem("cartId");
 });
 
 const submitForm = () => {
@@ -33,6 +35,7 @@ const submitForm = () => {
     }),
     headers: {
       "Content-Type": "application/json",
+      Authorization: `Bearer ${localStorage.getItem("authToken")}`,
     },
   }).then(() => location.reload());
 };
@@ -64,6 +67,7 @@ const addProduct = (prdId) => {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
+      Authorization: `Bearer ${localStorage.getItem("authToken")}`,
     },
   }).then((result) => console.log(result));
 };
@@ -73,6 +77,7 @@ const deleteProduct = (prdId) => {
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",
+      Authorization: `Bearer ${localStorage.getItem("authToken")}`,
     },
   }).then(() => location.reload());
 };

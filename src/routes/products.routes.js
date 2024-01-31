@@ -3,7 +3,7 @@ const router = Router();
 const productDao = require("../Daos/DbManager/product.dao");
 const { authToken, passportCall } = require("../utils");
 
-router.get("/", passportCall("jwt"), async (req, res) => {
+router.get("/", authToken, async (req, res) => {
   const { page, limit, category, sort } = req.query;
   const result = await productDao.getProducts(limit, page, sort, category);
   res.json(result);

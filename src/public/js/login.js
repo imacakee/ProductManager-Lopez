@@ -17,7 +17,8 @@ form.addEventListener("submit", (e) => {
         console.log("Cookies generadas:");
         console.log(document.cookie);
         alert("Login realizado con exito!");
-        // window.location.replace("/users");
+        localStorage.setItem("authToken", json.jwt);
+        localStorage.setItem("cartId", json.cartId);
         window.location.replace("/products");
       });
     } else if (result.status === 401) {
@@ -25,9 +26,4 @@ form.addEventListener("submit", (e) => {
       alert("Login invalido revisa tus credenciales!");
     }
   });
-  // .then((result) => {
-  //   if (result.status === 200) {
-  //     window.location.replace("/products");
-  //   }
-  // });
 });

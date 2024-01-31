@@ -7,7 +7,7 @@ router.get("/", authToken, (req, res) => {
   res.render("home", {});
 });
 
-router.get("/realTimeProducts", authToken, (req, res) => {
+router.get("/realTimeProducts", passportCall("jwt"), (req, res) => {
   res.render("realTimePrd", {});
 });
 

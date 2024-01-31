@@ -1,7 +1,9 @@
 const passport = require("passport");
-const userModel = require("../models/user.model.js");
 const jwtStrategy = require("passport-jwt");
 const passportLocal = require("passport-local");
+
+const userModel = require("../models/user.model.js");
+const { cartModel } = require("../models/cart.model.js");
 const { createHash } = require("../utils.js");
 
 const localStrategy = passportLocal.Strategy;
@@ -10,7 +12,6 @@ const JwtStrategy = jwtStrategy.Strategy;
 const ExtractJWT = jwtStrategy.ExtractJwt;
 
 const initializePassport = () => {
-  //Estrategia de obtener Token JWT por Cookie:
   passport.use(
     "jwt",
     new JwtStrategy(
@@ -34,31 +35,27 @@ const initializePassport = () => {
   passport.use(
     "register",
     new localStrategy(
-      // passReqToCallback: para convertirlo en un callback de request, para asi poder iteracturar con la data que viene del cliente
-      // usernameField: renombramos el username
       { passReqToCallback: true, usernameField: "email" },
       async (req, username, password, done) => {
         const { first_name, last_name, email, age } = req.body;
         try {
-          //Validamos si el user existe en la DB
           const exist = await userModel.findOne({ email });
           if (exist) {
             console.log("El user ya existe!!");
             done(null, false);
           }
-
+          const cart = await cartModel.create({ items: [] });
           const user = {
             first_name,
             last_name,
             email,
             age,
-            // password //se encriptara despues...
             password: createHash(password),
             loggedBy: "form",
+            cartId: cart._id,
           };
           const result = await userModel.create(user);
           console.log(result);
-          // Todo sale ok
           return done(null, result);
         } catch (error) {
           return done(error);
@@ -66,27 +63,12 @@ const initializePassport = () => {
       }
     )
   );
-
-  //Funciones de Serializacion y Desserializacion
-  passport.serializeUser((user, done) => {
-    done(null, user._id);
-  });
-
-  passport.deserializeUser(async (id, done) => {
-    try {
-      let user = await userModel.findById(id);
-      done(null, user);
-    } catch (error) {
-      console.error("Error deserializando el usuario: " + error);
-    }
-  });
 };
 
 const cookieExtractor = (req) => {
   let token = null;
   console.log("Entrando a Cookie Extractor");
   if (req && req.cookies) {
-    //Validamos que exista el request y las cookies.
     console.log("Cookies presentes: ");
     console.log(req.cookies);
     token = req.cookies["jwtCookieToken"];

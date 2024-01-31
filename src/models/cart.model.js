@@ -4,7 +4,7 @@ const mongoosePaginate = require("mongoose-paginate-v2");
 const cartSchema = new Schema({
   items: [
     {
-      product: { type: Schema.Types.ObjectId, required: true, ref: "products" },
+      product: { type: Schema.Types.ObjectId, ref: "products" },
       quantity: { type: Number, default: 1 },
     },
   ],
