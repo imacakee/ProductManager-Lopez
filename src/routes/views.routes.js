@@ -1,17 +1,17 @@
 const { Router } = require("express");
-const { authToken, passportCall } = require("../utils");
+const middleware = require("../middlewares/views.middleware");
 
 const router = Router();
 
-router.get("/", authToken, (req, res) => {
+router.get("/", middleware.home, (req, res) => {
   res.render("home", {});
 });
 
-router.get("/realTimeProducts", passportCall("jwt"), (req, res) => {
+router.get("/realTimeProducts", middleware.realTimePrd, (req, res) => {
   res.render("realTimePrd", {});
 });
 
-router.get("/products", passportCall("jwt"), (req, res) => {
+router.get("/products", middleware.products, (req, res) => {
   res.render("products", {});
 });
 

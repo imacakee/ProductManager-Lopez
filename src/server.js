@@ -26,6 +26,7 @@ app.use(express.urlencoded({ extended: true }));
 
 const productRouter = require("./routes/products.routes.js");
 const cartRouter = require("./routes/cart.routes.js");
+const MongoSingleton = require("./config/mongodb.singleton.js");
 const io = new Server(httpServer);
 
 app.engine(
@@ -88,3 +89,14 @@ io.on("connection", async (socket) => {
 
   socket.emit("products", await pm.getProducts());
 });
+
+//TODO: MongoSingleton
+const mongoInstance = async () => {
+  try {
+    await MongoSingleton.getInstance();
+  } catch (error) {
+    console.log(error);
+  }
+};
+mongoInstance();
+mongoInstance();

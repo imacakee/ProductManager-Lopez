@@ -1,5 +1,5 @@
 const { Router } = require("express");
-const { authToken, passportCall } = require("../utils");
+const middleware = require("../middlewares/users.views.middleware");
 
 const router = Router();
 
@@ -11,7 +11,7 @@ router.get("/register", (req, res) => {
   res.render("register");
 });
 
-router.get("/", passportCall("jwt"), (req, res) => {
+router.get("/", middleware.profile, (req, res) => {
   res.render("profile", {
     user: req.session.user,
   });

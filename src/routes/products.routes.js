@@ -1,32 +1,16 @@
 const { Router } = require("express");
 const router = Router();
-const productDao = require("../Daos/DbManager/product.dao");
-const { authToken, passportCall } = require("../utils");
+const controller = require("../controllers/products.controller");
+const middleware = require("../middlewares/products.middleware");
 
-router.get("/", authToken, async (req, res) => {
-  const { page, limit, category, sort } = req.query;
-  const result = await productDao.getProducts(limit, page, sort, category);
-  res.json(result);
-});
+router.get("/", middleware.list, controller.list);
 
-router.get("/:pid", authToken, async (req, res) => {
-  const product = await productDao.getProductById(req.params.pid);
-  res.json(product);
-});
+router.get("/:pid", middleware.getById, controller.getById);
 
-router.post("/", authToken, async (req, res) => {
-  const product = await productDao.addProduct(req.body);
-  res.json(product);
-});
+router.post("/", middleware.create, controller.create);
 
-router.put("/:pid", authToken, async (req, res) => {
-  const product = await productDao.updateProduct(req.params.pid, req.body);
-  res.json(product);
-});
+router.put("/:pid", middleware.update, controller.update);
 
-router.delete("/:pid", authToken, async (req, res) => {
-  const product = await productDao.deleteProduct(req.params.pid);
-  res.json(product);
-});
+router.delete("/:pid", middleware.delete, controller.delete);
 
 module.exports = router;
