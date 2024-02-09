@@ -1,40 +1,24 @@
 const { Router } = require("express");
 const router = Router();
-const cartDao = require("../Daos/DbManager/cart.dao");
-const { validateUser } = require("../utils");
+const cartDao = require("../services/cart.service");
+const middleware = require("../middlewares/cart.middleware");
+const { authToken } = require("../utils");
+const controller = require("../controllers/cart.controller");
 
-router.get("/", validateUser, async (req, res) => {
-  const result = await cartDao.getCarts(req.query);
-  res.json(result);
-});
+router.get("/", middleware.list, controller.list);
 
-router.get("/:cid", validateUser, async (req, res) => {
-  const result = await cartDao.getCartById(req.params.cid);
-  res.json(result);
-});
+router.get("/:cid", middleware.getById, controller.getById);
 
-router.post("/", validateUser, async (req, res) => {
-  const result = await cartDao.addCart(req.body);
-  res.json(result);
-});
+router.post("/", middleware.create, controller.create);
 
-router.put("/:cid/", validateUser, async (req, res) => {
-  const result = await cartDao.updateCart(req.params.cid, req.body.newCart);
-  res.json(result);
-});
+router.put("/:cid/", middleware.update, controller.update);
 
-router.put("/:cid/product/:pid", validateUser, async (req, res) => {
-  const result = await cartDao.modifyProduct(
-    req.params.cid,
-    req.params.pid,
-    req.query.amount
-  );
-  res.json(result);
-});
+router.put(
+  "/:cid/product/:pid",
+  middleware.modifyProduct,
+  controller.modifyProduct
+);
 
-router.delete("/:cid", async (req, res) => {
-  const result = await cartDao.deleteCart(req.params.cid);
-  res.json(result);
-});
+router.delete("/:cid", middleware.delete, controller.delete);
 
 module.exports = router;

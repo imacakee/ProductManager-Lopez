@@ -13,7 +13,17 @@ form.addEventListener("submit", (e) => {
     },
   }).then((result) => {
     if (result.status === 200) {
-      window.location.replace("/products");
+      result.json().then((json) => {
+        console.log("Cookies generadas:");
+        console.log(document.cookie);
+        alert("Login realizado con exito!");
+        localStorage.setItem("authToken", json.jwt);
+        localStorage.setItem("cartId", json.cartId);
+        window.location.replace("/products");
+      });
+    } else if (result.status === 401) {
+      console.log(result);
+      alert("Login invalido revisa tus credenciales!");
     }
   });
 });

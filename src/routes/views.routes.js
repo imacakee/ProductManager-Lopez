@@ -1,17 +1,17 @@
 const { Router } = require("express");
-const { validateUser } = require("../utils");
+const middleware = require("../middlewares/views.middleware");
 
 const router = Router();
 
-router.get("/", validateUser, (req, res) => {
+router.get("/", middleware.home, (req, res) => {
   res.render("home", {});
 });
 
-router.get("/realTimeProducts", validateUser, (req, res) => {
+router.get("/realTimeProducts", middleware.realTimePrd, (req, res) => {
   res.render("realTimePrd", {});
 });
 
-router.get("/products", validateUser, (req, res) => {
+router.get("/products", middleware.products, (req, res) => {
   res.render("products", {});
 });
 
