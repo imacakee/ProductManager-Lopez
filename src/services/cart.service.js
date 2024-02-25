@@ -6,49 +6,36 @@ class CartDao {
       await cartModel.create(newCart);
     } catch (error) {
       console.log(error);
+      return { message: "Error creating cart", error };
     }
   }
 
-  async getCarts({ limit, page }) {
-    return await cartModel.paginate(
-      {},
-      {
-        limit: limit || 10,
-        page: page || 1,
-        populate: { path: "items", populate: { path: "product" } },
-      }
-    );
+  async getCarts(limit, page) {
+    try {
+      return await cartModel.paginate(
+        {},
+        {
+          limit: limit || 10,
+          page: page || 1,
+          populate: { path: "items", populate: { path: "product" } },
+        }
+      );
+    } catch (error) {
+      console.log(error);
+      return { message: "Error fetching cart", error };
+    }
   }
 
   async getCartById(id) {
     return await cartModel.findById(id);
   }
 
-  async modifyProduct(id, productId, amountToModify) {
+  async modifyProduct(id, items) {
     try {
-      const cart = await cartModel.findById(id);
-      const item = cart.items.find((item) => item.product == productId);
-      if (item) {
-        item.quantity += +amountToModify;
-        const indexOfItem = cart.items.indexOf(item);
-        if (item.quantity <= 0) {
-          cart.items.splice(indexOfItem, 1);
-        } else cart.items.splice(indexOfItem, 1, item);
-      } else if (+amountToModify > 0) {
-        const newProd = { product: productId, quantity: amountToModify };
-        if (cart.items) {
-          cart.items.push(newProd);
-        } else {
-          cart.items = [newProd];
-        }
-      }
-      return await cartModel.findByIdAndUpdate(
-        id,
-        { items: cart.items },
-        { new: true }
-      );
+      return await cartModel.findByIdAndUpdate(id, { items }, { new: true });
     } catch (error) {
       console.log(error);
+      return { message: `Error updating cart`, error };
     }
   }
 

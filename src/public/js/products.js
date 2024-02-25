@@ -53,6 +53,25 @@ const submitForm = () => {
   }).then(() => location.reload());
 };
 
+const purchase = () => {
+  fetch(`/api/carts/${cartId}/purchase`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${authToken}`,
+    },
+  })
+    .then((res) => res.json())
+    .then((res) => {
+      if (res.error) {
+        alert(`${res.message}: ${res.products.toString()}`);
+      } else {
+        alert(res.message);
+      }
+      location.reload();
+    });
+};
+
 const loadProducts = (response) => {
   const pagesContainer = document.getElementById("product_pages");
   for (let page = 1; page <= response.totalPages; page++) {
