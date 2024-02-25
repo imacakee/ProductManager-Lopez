@@ -1,7 +1,7 @@
 const { Router } = require("express");
 const router = Router();
-const controller = require("../controllers/products.controller");
-const middleware = require("../middlewares/products.middleware");
+const controller = require("../../controllers/products.controller");
+const middleware = require("../../middlewares/products.middleware");
 
 router.get("/", middleware.list, controller.list);
 

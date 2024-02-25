@@ -1,3 +1,4 @@
+const ticketModel = require("../models/ticket.model.js");
 const usersService = require("../services/users.service");
 const { isValidPassword, generateJWToken } = require("../utils.js");
 const controller = {};
@@ -13,6 +14,7 @@ controller.login = async (req, res) => {
   const { email, password } = req.body;
   try {
     const user = await usersService.findByEmail(email);
+    ticketModel
     if (!user) {
       console.warn("User doesn't exists with username: " + email);
       return res.status(204).send({
@@ -59,6 +61,12 @@ controller.logout = (req, res) => {
     }
     res.redirect("/users/login");
   });
+};
+
+controller.current = (req, res) => {
+  const user = req.user;
+  delete user.email;
+  res.render("current", { user: user });
 };
 
 module.exports = controller;

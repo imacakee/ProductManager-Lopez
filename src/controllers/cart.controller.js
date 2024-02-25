@@ -1,4 +1,6 @@
-const service = require("../services/cart.service");
+const CartRepository = require("../repository/cart.repository");
+const cartDao = require("../services/cart.service");
+const service = new CartRepository(cartDao);
 
 const controller = {};
 
@@ -14,6 +16,11 @@ controller.getById = async (req, res) => {
 
 controller.create = async (req, res) => {
   const result = await service.addCart(req.body);
+  res.json(result);
+};
+
+controller.purchase = async (req, res) => {
+  const result = await service.purchase(req.params.cid, req.user.email);
   res.json(result);
 };
 

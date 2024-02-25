@@ -1,5 +1,5 @@
 const { Router } = require("express");
-const middleware = require("../middlewares/views.middleware");
+const middleware = require("../../middlewares/views.middleware");
 
 const router = Router();
 

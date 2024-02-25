@@ -8,10 +8,10 @@ const session = require("express-session");
 const cookieParser = require("cookie-parser");
 const MongoStore = require("connect-mongo");
 const initializePassport = require("./config/passport.config.js");
-const viewsRouter = require("./routes/views.routes.js");
-const githubLoginViewRouter = require("./routes/github-log.views.js");
-const sessionsRouter = require("./routes/sessions.router.js");
-const usersViewRouter = require("./routes/users.views.router.js");
+const viewsRouter = require("./routes/views/views.routes.js");
+const githubLoginViewRouter = require("./routes/views/github-log.views.js");
+const sessionsRouter = require("./routes/api/sessions.router.js");
+const usersViewRouter = require("./routes/views/users.views.router.js");
 const { ProductManager, Product } = require("../products.js");
 
 const PATH = "products/products.txt";
@@ -25,8 +25,8 @@ const httpServer = app.listen(process.env.PORT, () =>
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-const productRouter = require("./routes/products.routes.js");
-const cartRouter = require("./routes/cart.routes.js");
+const productRouter = require("./routes/api/products.routes.js");
+const cartRouter = require("./routes/api/cart.routes.js");
 const MongoSingleton = require("./config/mongodb.singleton.js");
 const io = new Server(httpServer);
 
@@ -73,7 +73,6 @@ app.set("views", __dirname + "/views");
 app.use(express.static(__dirname + "/public"));
 
 app.use("/api/products", productRouter);
-
 app.use("/", viewsRouter);
 app.use("/api/carts", cartRouter);
 app.use("/users", usersViewRouter);

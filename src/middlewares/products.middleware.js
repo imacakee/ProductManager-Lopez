@@ -1,4 +1,4 @@
-const { authToken } = require("../utils");
+const { authToken, authorization } = require("../utils");
 
 const middleware = {};
 
@@ -6,10 +6,10 @@ middleware.list = [authToken];
 
 middleware.getById = [authToken];
 
-middleware.create = [authToken];
+middleware.create = [authToken, authorization("admin")];
 
-middleware.update = [authToken];
+middleware.update = [authToken, authorization("admin")];
 
-middleware.delete = [authToken];
+middleware.delete = [authToken, authorization("admin")];
 
 module.exports = middleware;
