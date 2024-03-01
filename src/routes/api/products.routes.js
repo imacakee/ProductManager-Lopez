@@ -5,6 +5,8 @@ const middleware = require("../../middlewares/products.middleware");
 
 router.get("/", middleware.list, controller.list);
 
+router.get("/mockingproducts", controller.generateProducts);
+
 router.get("/:pid", middleware.getById, controller.getById);
 
 router.post("/", middleware.create, controller.create);

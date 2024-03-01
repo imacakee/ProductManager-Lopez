@@ -1,4 +1,5 @@
 const service = require("../services/product.service");
+const { generateProduct } = require("../utils");
 
 const controller = {};
 
@@ -6,6 +7,14 @@ controller.list = async (req, res) => {
   const { page, limit, category, sort } = req.query;
   const result = await service.getProducts(limit, page, sort, category);
   res.json(result);
+};
+
+controller.generateProducts = (req, res) => {
+  const result = [];
+  for (let i = 0; i <= 99; i++) {
+    result.push(generateProduct());
+  }
+  return res.json(result);
 };
 
 controller.getById = async (req, res) => {

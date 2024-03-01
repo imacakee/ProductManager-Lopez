@@ -6,6 +6,7 @@ const GitHubStrategy = require("passport-github2");
 const userModel = require("../models/user.model.js");
 const { cartModel } = require("../models/cart.model.js");
 const { createHash } = require("../utils.js");
+const { generateUserErrorInfo } = require("../services/errors/info.js");
 
 const localStrategy = passportLocal.Strategy;
 
@@ -84,6 +85,20 @@ const initializePassport = () => {
       async (req, username, password, done) => {
         const { first_name, last_name, email, age } = req.body;
         try {
+          if (!first_name || !email) {
+            CustomError.createError({
+              name: "User Create Error",
+              cause: generateUserErrorInfo({
+                first_name,
+                last_name,
+                age,
+                email,
+              }),
+              message: "Error tratando de crear al usuario",
+              code: EErrors.INVALID_TYPES_ERROR,
+            });
+          }
+
           const exist = await userModel.findOne({ email });
           if (exist) {
             console.log("El user ya existe!!");
@@ -101,7 +116,14 @@ const initializePassport = () => {
           };
           const result = await userModel.create(user);
           console.log(result);
-          return done(null, result);
+          const userDto = {
+            first_name,
+            last_name,
+            email,
+            age,
+            cartId: cart._id,
+          };
+          return done(null, userDto);
         } catch (error) {
           return done(error);
         }

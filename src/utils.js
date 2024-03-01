@@ -1,6 +1,7 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const passport = require("passport");
+const { faker } = require("@faker-js/faker");
 
 const validateUser = (req, res, next) => {
   if (!req.session.user) {
@@ -73,6 +74,19 @@ const authorization = (role) => {
   };
 };
 
+const generateProduct = () => {
+  return {
+    title: faker.commerce.productName(),
+    description: faker.commerce.productDescription(),
+    price: faker.commerce.price({ min: 1, max: 1000 }),
+    status: faker.datatype.boolean({ probability: 0.5 }),
+    thumbnail: faker.lorem.text(),
+    code: faker.string.uuid(),
+    stock: faker.number.int({ min: 1, max: 9 }),
+    category: faker.commerce.department(),
+  };
+};
+
 module.exports = {
   validateUser,
   createHash,
@@ -81,4 +95,5 @@ module.exports = {
   authToken,
   passportCall,
   authorization,
+  generateProduct,
 };

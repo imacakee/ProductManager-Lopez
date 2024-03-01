@@ -8,9 +8,13 @@ const schema = new mongoose.Schema({
   email: {
     type: String,
     unique: true,
+    required: true,
   },
   age: Number,
-  password: String,
+  password: {
+    type: String,
+    required: true,
+  },
   loggedBy: String,
   role: {
     type: String,
