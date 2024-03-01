@@ -2,6 +2,52 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const passport = require("passport");
 const { faker } = require("@faker-js/faker");
+const nodemailer = require("nodemailer");
+
+console.log("CREDENCIALES GMAIL");
+console.log(process.env.GMAIL_ACCOUNT);
+console.log(process.env.GMAIL_PASSWORD);
+
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  port: 587,
+  auth: {
+    user: process.env.GMAIL_ACCOUNT,
+    pass: process.env.GMAIL_PASSWORD,
+  },
+});
+
+transporter.verify(function (error, success) {
+  if (error) {
+    console.log(error);
+  } else {
+    console.log("Server is ready to take our messages");
+  }
+});
+
+const sendEmail = (email, ticket) => {
+  const html = `
+  <h1>Gracias por su compra!<h1/>
+  <h3>Codigo nro: ${ticket.code}<h3/>
+  <h3>Coste total: ${ticket.amount}<h3/>
+  <h3>Fecha de compra: ${ticket.purchaseDate}<h3/>
+  `;
+
+  const options = {
+    from: process.env.GMAIL_ACCOUNT,
+    to: email,
+    subject: "Ticket de compra",
+    html,
+  };
+
+  return transporter.sendMail(options, (error, info) => {
+    if (error) {
+      console.log(error);
+    } else {
+      console.log(`Email sent to ${email}`);
+    }
+  });
+};
 
 const validateUser = (req, res, next) => {
   if (!req.session.user) {
@@ -96,4 +142,5 @@ module.exports = {
   passportCall,
   authorization,
   generateProduct,
+  sendEmail,
 };

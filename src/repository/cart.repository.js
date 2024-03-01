@@ -1,5 +1,7 @@
 const productDao = require("../services/product.service");
 const ticketDao = require("../services/ticket.service");
+const nodemailer = require("nodemailer");
+const { sendEmail } = require("../utils");
 
 class CartRepository {
   constructor(dao) {
@@ -37,7 +39,9 @@ class CartRepository {
 
     await this.dao.updateCart(cartId, cart);
     const newTicket = { amount: totalAmount, purchaser: email };
-    await ticketDao.addTicket(newTicket);
+    const ticket = await ticketDao.addTicket(newTicket);
+
+    sendEmail(email, ticket);
     if (failedPurchases.length) {
       return {
         error: true,

@@ -14,12 +14,6 @@ const sessionsRouter = require("./routes/api/sessions.router.js");
 const usersViewRouter = require("./routes/views/users.views.router.js");
 const { ProductManager, Product } = require("../products.js");
 
-//usar middlewares para manejo de errores
-//middleware de recepción de errores
-//generador personalizado de errores
-//diccionario de errores
-//agregar nodemailer para enviar tickets de compra al usuario
-
 const PATH = "products/products.txt";
 const pm = new ProductManager(PATH);
 
