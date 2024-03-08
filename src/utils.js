@@ -3,17 +3,19 @@ const jwt = require("jsonwebtoken");
 const passport = require("passport");
 const { faker } = require("@faker-js/faker");
 const nodemailer = require("nodemailer");
+const winston = require("winston");
+const { gmailAccount, gmailPassword, privateKey } = require("./config/config");
 
 console.log("CREDENCIALES GMAIL");
-console.log(process.env.GMAIL_ACCOUNT);
-console.log(process.env.GMAIL_PASSWORD);
+console.log(gmailAccount);
+console.log(gmailPassword);
 
 const transporter = nodemailer.createTransport({
   service: "gmail",
   port: 587,
   auth: {
-    user: process.env.GMAIL_ACCOUNT,
-    pass: process.env.GMAIL_PASSWORD,
+    user: gmailAccount,
+    pass: gmailPassword,
   },
 });
 
@@ -34,7 +36,7 @@ const sendEmail = (email, ticket) => {
   `;
 
   const options = {
-    from: process.env.GMAIL_ACCOUNT,
+    from: gmailAccount,
     to: email,
     subject: "Ticket de compra",
     html,
@@ -56,6 +58,45 @@ const validateUser = (req, res, next) => {
   next();
 };
 
+//TODO::Creating our logger:
+const logger = winston.createLogger({
+  // Declaramos el trasnport
+  transports: [
+    new winston.transports.Console({ level: "http" }),
+    new winston.transports.File({ filename: "./errors.log", level: "warn" }),
+  ],
+});
+
+// Declaramos a middleware
+const addLogger = (req, res, next) => {
+  req.logger = logger;
+
+  req.logger.warn(
+    `${req.method} en ${
+      req.url
+    } - at ${new Date().toLocaleDateString()} - ${new Date().toLocaleTimeString()}`
+  );
+  req.logger.http(
+    `${req.method} en ${
+      req.url
+    } - at ${new Date().toLocaleDateString()} - ${new Date().toLocaleTimeString()}`
+  );
+  req.logger.error(
+    `${req.method} en ${
+      req.url
+    } - at ${new Date().toLocaleDateString()} - ${new Date().toLocaleTimeString()}`
+  );
+
+  // Este no aparece porque no esta definido dentro de los niveles
+  req.logger.debug(
+    `${req.method} en ${
+      req.url
+    } - at ${new Date().toLocaleDateString()} - ${new Date().toLocaleTimeString()}`
+  );
+
+  next();
+};
+
 const createHash = (password) =>
   bcrypt.hashSync(password, bcrypt.genSaltSync(10));
 const isValidPassword = (user, password) => {
@@ -66,7 +107,7 @@ const isValidPassword = (user, password) => {
 };
 
 const generateJWToken = (user) => {
-  return jwt.sign({ user }, process.env.PRIVATE_KEY, { expiresIn: "1h" });
+  return jwt.sign({ user }, privateKey, { expiresIn: "1h" });
 };
 
 const authToken = (req, res, next) => {
@@ -77,7 +118,7 @@ const authToken = (req, res, next) => {
     return res.redirect(401, "/users/login");
   }
   const token = authHeader.split(" ")[1];
-  jwt.verify(token, process.env.PRIVATE_KEY, (error, credentials) => {
+  jwt.verify(token, privateKey, (error, credentials) => {
     if (error)
       return res.status(403).send({ error: "Token invalid, Unauthorized!" });
     req.user = credentials.user;
@@ -143,4 +184,5 @@ module.exports = {
   authorization,
   generateProduct,
   sendEmail,
+  addLogger
 };

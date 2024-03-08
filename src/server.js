@@ -1,4 +1,5 @@
-require("dotenv").config();
+// require("dotenv").config();
+// const config = require("./config/config.js");
 const express = require("express");
 const handlebars = require("express-handlebars");
 const passport = require("passport");
@@ -13,21 +14,25 @@ const githubLoginViewRouter = require("./routes/views/github-log.views.js");
 const sessionsRouter = require("./routes/api/sessions.router.js");
 const usersViewRouter = require("./routes/views/users.views.router.js");
 const { ProductManager, Product } = require("../products.js");
+const productRouter = require("./routes/api/products.routes.js");
+const cartRouter = require("./routes/api/cart.routes.js");
+const MongoSingleton = require("./config/mongodb.singleton.js");
+const { port, mongoUrl } = require("./config/config.js");
+// **BASE
+// import { addLogger } from './config/logger_BASE.js';
+const { addLogger } = require("./utils.js");
 
 const PATH = "products/products.txt";
 const pm = new ProductManager(PATH);
 
 const app = express();
-const httpServer = app.listen(process.env.PORT, () =>
-  console.log(`Server listening on port ${process.env.PORT}`)
+const httpServer = app.listen(port, () =>
+  console.log(`Server listening on port ${port}`)
 );
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-const productRouter = require("./routes/api/products.routes.js");
-const cartRouter = require("./routes/api/cart.routes.js");
-const MongoSingleton = require("./config/mongodb.singleton.js");
 const io = new Server(httpServer);
 
 app.engine(
@@ -41,7 +46,7 @@ app.engine(
 app.use(
   session({
     store: MongoStore.create({
-      mongoUrl: process.env.MONGO_URL,
+      mongoUrl: mongoUrl,
       mongoOptions: { useNewUrlParser: true, useUnifiedTopology: true },
       ttl: 10 * 60,
     }),
@@ -57,15 +62,15 @@ app.use(cookieParser("CoderS3cr3tC0d3"));
 initializePassport();
 app.use(passport.initialize());
 
-mongoose
-  .connect(process.env.MONGO_URL, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
-  .then((db) => console.log("Db is connected"))
-  .catch((error) => console.log(error));
+// mongoose
+//   .connect(mongoUrl, {
+//     useNewUrlParser: true,
+//     useUnifiedTopology: true,
+//   })
+//   .then((db) => console.log("Db is connected"))
+//   .catch((error) => console.log(error));
 
-module.exports = mongoose;
+// module.exports = mongoose;
 
 app.set("view engine", "hbs");
 app.set("views", __dirname + "/views");
@@ -78,6 +83,8 @@ app.use("/api/carts", cartRouter);
 app.use("/users", usersViewRouter);
 app.use("/api/sessions", sessionsRouter);
 app.use("/github", githubLoginViewRouter);
+// **Logger
+app.use(addLogger);
 
 io.on("connection", async (socket) => {
   socket.on("product_send", async (product) => {
@@ -99,3 +106,10 @@ const mongoInstance = async () => {
 };
 mongoInstance();
 mongoInstance();
+
+// **BASE
+app.get("/logger", (req, res) => {
+  // req.logger.warn("Prueba de log level warn --> en Endpoint"); // **BASE
+  req.logger.warning("Prueba de log level warning --> en Endpoint"); // **CUSTOM
+  res.send("Prueba de logger!");
+});

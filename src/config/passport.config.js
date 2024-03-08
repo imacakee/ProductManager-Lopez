@@ -7,6 +7,7 @@ const userModel = require("../models/user.model.js");
 const { cartModel } = require("../models/cart.model.js");
 const { createHash } = require("../utils.js");
 const { generateUserErrorInfo } = require("../services/errors/info.js");
+const { privateKey, clientId, clientSecret, callbackUrl } = require("./config.js");
 
 const localStrategy = passportLocal.Strategy;
 
@@ -19,7 +20,7 @@ const initializePassport = () => {
     new JwtStrategy(
       {
         jwtFromRequest: ExtractJWT.fromExtractors([cookieExtractor]),
-        secretOrKey: process.env.PRIVATE_KEY,
+        secretOrKey: privateKey,
       },
       async (jwt_payload, done) => {
         console.log("Entrando a passport Strategy con JWT.");
@@ -38,9 +39,9 @@ const initializePassport = () => {
     "github",
     new GitHubStrategy(
       {
-        clientID: process.env.CLIENT_ID,
-        clientSecret: process.env.CLIENT_SECRET,
-        callbackUrl: process.env.CALLBACK_URL,
+        clientID: clientId,
+        clientSecret: clientSecret,
+        callbackUrl: callbackUrl,
       },
       async (accessToken, refreshToken, profile, done) => {
         console.log("Profile obtenido del usuario de GitHub: ");

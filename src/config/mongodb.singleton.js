@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const { mongoUrl } = require("./config");
 
 class MongoSingleton {
   static #instance;
@@ -19,7 +20,7 @@ class MongoSingleton {
 
   #connectMongoDB = async () => {
     try {
-      await mongoose.connect(process.env.MONGO_URL);
+      await mongoose.connect(mongoUrl);
       console.log("Conectado con exito a MongoDB usando Moongose.");
     } catch (error) {
       console.error("No se pudo conectar a la BD usando Moongose: " + error);

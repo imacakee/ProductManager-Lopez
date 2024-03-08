@@ -1,5 +1,6 @@
 const { Router } = require("express");
 const middleware = require("../../middlewares/users.views.middleware");
+const controller = require("../../controllers/users.controller");
 
 const router = Router();
 
@@ -16,5 +17,7 @@ router.get("/", middleware.profile, (req, res) => {
     user: req.session.user,
   });
 });
+//endpoint para probar todos los logs
+router.get("/loggerTest", controller.fakeUser);
 
 module.exports = router;
