@@ -1,4 +1,5 @@
 const { cartModel } = require("../models/cart.model");
+const CustomError = require("./errors/custom.error");
 
 class CartDao {
   async addCart(newCart) {
@@ -6,7 +7,11 @@ class CartDao {
       await cartModel.create(newCart);
     } catch (error) {
       console.log(error);
-      return { message: "Error creating cart", error };
+      return CustomError.createError({
+        cause: "Error creating cart",
+        message: error,
+        code: 500,
+      });
     }
   }
 
@@ -22,7 +27,11 @@ class CartDao {
       );
     } catch (error) {
       console.log(error);
-      return { message: "Error fetching cart", error };
+      return CustomError.createError({
+        cause: "Error fetching cart",
+        message: error,
+        code: 500,
+      });
     }
   }
 
@@ -35,7 +44,11 @@ class CartDao {
       return await cartModel.findByIdAndUpdate(id, { items }, { new: true });
     } catch (error) {
       console.log(error);
-      return { message: `Error updating cart`, error };
+      return CustomError.createError({
+        cause: "Error updating cart",
+        message: error,
+        code: 500,
+      });
     }
   }
 

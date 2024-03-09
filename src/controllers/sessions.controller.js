@@ -1,4 +1,5 @@
 const ticketModel = require("../models/ticket.model.js");
+const CustomError = require("../services/errors/custom.error.js");
 const usersService = require("../services/users.service");
 const { isValidPassword, generateJWToken } = require("../utils.js");
 const controller = {};
@@ -24,11 +25,13 @@ controller.login = async (req, res) => {
     }
     if (!isValidPassword(user, password)) {
       req.logger.warn("Invalid credentials for user: " + email);
-      return res.status(401).send({
-        status: "error",
-        error: "El usuario y la contraseña no coinciden!",
+      return CustomError.createError({
+        cause: "invalid credentials",
+        message: "El usuario y la contraseña no coinciden!",
+        code: 401,
       });
     }
+
     const tokenUser = {
       name: `${user.first_name} ${user.last_name}`,
       email: user.email,
@@ -48,9 +51,11 @@ controller.login = async (req, res) => {
     });
   } catch (error) {
     req.logger.error(`Error while loggin in: ${error}`);
-    return res
-      .status(500)
-      .send({ status: "error", error: "Error interno de la applicacion." });
+    return CustomError.createError({
+      cause: "error while loggin i",
+      message: { error },
+      code: 500,
+    });
   }
 };
 
