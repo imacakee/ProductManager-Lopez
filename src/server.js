@@ -1,5 +1,3 @@
-// require("dotenv").config();
-// const config = require("./config/config.js");
 const express = require("express");
 const handlebars = require("express-handlebars");
 const passport = require("passport");
@@ -18,8 +16,6 @@ const productRouter = require("./routes/api/products.routes.js");
 const cartRouter = require("./routes/api/cart.routes.js");
 const MongoSingleton = require("./config/mongodb.singleton.js");
 const { port, mongoUrl } = require("./config/config.js");
-// **BASE
-// import { addLogger } from './config/logger_BASE.js';
 const { addLogger } = require("./utils.js");
 
 const PATH = "products/products.txt";
@@ -62,20 +58,11 @@ app.use(cookieParser("CoderS3cr3tC0d3"));
 initializePassport();
 app.use(passport.initialize());
 
-// mongoose
-//   .connect(mongoUrl, {
-//     useNewUrlParser: true,
-//     useUnifiedTopology: true,
-//   })
-//   .then((db) => console.log("Db is connected"))
-//   .catch((error) => console.log(error));
-
-// module.exports = mongoose;
-
 app.set("view engine", "hbs");
 app.set("views", __dirname + "/views");
 
 app.use(express.static(__dirname + "/public"));
+app.use(addLogger);
 
 app.use("/api/products", productRouter);
 app.use("/", viewsRouter);
@@ -83,8 +70,6 @@ app.use("/api/carts", cartRouter);
 app.use("/users", usersViewRouter);
 app.use("/api/sessions", sessionsRouter);
 app.use("/github", githubLoginViewRouter);
-// **Logger
-app.use(addLogger);
 
 io.on("connection", async (socket) => {
   socket.on("product_send", async (product) => {
@@ -106,10 +91,3 @@ const mongoInstance = async () => {
 };
 mongoInstance();
 mongoInstance();
-
-// **BASE
-app.get("/logger", (req, res) => {
-  // req.logger.warn("Prueba de log level warn --> en Endpoint"); // **BASE
-  req.logger.warning("Prueba de log level warning --> en Endpoint"); // **CUSTOM
-  res.send("Prueba de logger!");
-});

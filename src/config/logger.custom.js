@@ -1,7 +1,6 @@
 const winston = require("winston");
 const config = require("./config");
 
-//TODO:: Creating our logger:
 const customLevelsOptions = {
   levels: {
     fatal: 0,
@@ -21,9 +20,7 @@ const customLevelsOptions = {
   },
 };
 
-// Logger en env desarrollo
 const prodLogger = winston.createLogger({
-  // Declaramos el trasnport
   levels: customLevelsOptions.levels,
   transports: [
     new winston.transports.Console({
@@ -35,28 +32,25 @@ const prodLogger = winston.createLogger({
     }),
     new winston.transports.File({
       filename: "errors.log",
-      level: "warning", //Cambiamos el logger level name.
+      level: "warning",
       format: winston.format.simple(),
     }),
   ],
 });
 
-// Logger en env prod
 const devLogger = winston.createLogger({
-  // Declaramos el transport
   levels: customLevelsOptions.levels,
   transports: [
-    new winston.transports.Console({ level: "http" }),
+    new winston.transports.Console({ level: "debug" }),
     new winston.transports.File({ filename: "errors.log", level: "warning" }),
   ],
 });
 
-// Declaramos a middleware
 const addLogger = (req, res, next) => {
   if (config.environment === "production") {
     req.logger = prodLogger;
 
-    req.logger.warning(
+    req.logger.warn(
       `${req.method} en ${
         req.url
       } - at ${new Date().toLocaleDateString()} - ${new Date().toLocaleTimeString()}`
@@ -74,7 +68,7 @@ const addLogger = (req, res, next) => {
   } else {
     req.logger = devLogger;
 
-    req.logger.warning(
+    req.logger.warn(
       `${req.method} en ${
         req.url
       } - at ${new Date().toLocaleDateString()} - ${new Date().toLocaleTimeString()}`

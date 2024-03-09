@@ -17,7 +17,7 @@ router.get("/", middleware.profile, (req, res) => {
     user: req.session.user,
   });
 });
-//endpoint para probar todos los logs
+
 router.get("/loggerTest", controller.fakeUser);
 
 module.exports = router;

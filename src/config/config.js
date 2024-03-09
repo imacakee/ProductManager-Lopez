@@ -1,7 +1,7 @@
 const dotenv = require("dotenv");
 const { Command } = require("commander");
 
-const program = new Command(); //Crea la instancia de comandos de commander.
+const program = new Command();
 
 program
   .option("-d", "Variable para debug", false)

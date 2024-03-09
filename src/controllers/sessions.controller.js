@@ -14,16 +14,16 @@ controller.login = async (req, res) => {
   const { email, password } = req.body;
   try {
     const user = await usersService.findByEmail(email);
-    ticketModel
+    ticketModel;
     if (!user) {
-      console.warn("User doesn't exists with username: " + email);
+      req.logger.warn("User doesn't exists with username: " + email);
       return res.status(204).send({
         error: "Not found",
         message: "Usuario no encontrado con username: " + email,
       });
     }
     if (!isValidPassword(user, password)) {
-      console.warn("Invalid credentials for user: " + email);
+      req.logger.warn("Invalid credentials for user: " + email);
       return res.status(401).send({
         status: "error",
         error: "El usuario y la contraseña no coinciden!",
@@ -47,7 +47,7 @@ controller.login = async (req, res) => {
       cartId: user.cartId,
     });
   } catch (error) {
-    console.error(error);
+    req.logger.error(`Error while loggin in: ${error}`);
     return res
       .status(500)
       .send({ status: "error", error: "Error interno de la applicacion." });

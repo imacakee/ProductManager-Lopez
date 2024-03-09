@@ -58,16 +58,13 @@ const validateUser = (req, res, next) => {
   next();
 };
 
-//TODO::Creating our logger:
 const logger = winston.createLogger({
-  // Declaramos el trasnport
   transports: [
     new winston.transports.Console({ level: "http" }),
     new winston.transports.File({ filename: "./errors.log", level: "warn" }),
   ],
 });
 
-// Declaramos a middleware
 const addLogger = (req, res, next) => {
   req.logger = logger;
 
@@ -87,7 +84,6 @@ const addLogger = (req, res, next) => {
     } - at ${new Date().toLocaleDateString()} - ${new Date().toLocaleTimeString()}`
   );
 
-  // Este no aparece porque no esta definido dentro de los niveles
   req.logger.debug(
     `${req.method} en ${
       req.url
@@ -115,12 +111,15 @@ const authToken = (req, res, next) => {
   console.log("Token present in header auth:");
   console.log(authHeader);
   if (!authHeader) {
+    req.logger.warn("No authorization header present in request");
     return res.redirect(401, "/users/login");
   }
   const token = authHeader.split(" ")[1];
   jwt.verify(token, privateKey, (error, credentials) => {
-    if (error)
+    if (error) {
+      req.logger.warn("error validating token: ", error);
       return res.status(403).send({ error: "Token invalid, Unauthorized!" });
+    }
     req.user = credentials.user;
     console.log("Se extrae la informacion del Token:");
     console.log(req.user);
@@ -149,10 +148,13 @@ const passportCall = (strategy) => {
 
 const authorization = (role) => {
   return async (req, res, next) => {
-    if (!req.user)
+    if (!req.user) {
+      req.logger.warn("No user found inside request object");
       return res.status(401).send("Unauthorized: User not found in JWT");
+    }
 
     if (req.user.role !== role) {
+      req.logger.warn("Users role doesn't match required permissions");
       return res
         .status(403)
         .send("Forbidden: El usuario no tiene permisos con este rol.");
@@ -184,5 +186,5 @@ module.exports = {
   authorization,
   generateProduct,
   sendEmail,
-  addLogger
+  addLogger,
 };

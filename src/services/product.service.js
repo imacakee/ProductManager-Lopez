@@ -6,6 +6,7 @@ class ProductDao {
       await productModel.create(newProduct);
     } catch (error) {
       console.log(error);
+      return { message: "Error creating product", error };
     }
   }
 
