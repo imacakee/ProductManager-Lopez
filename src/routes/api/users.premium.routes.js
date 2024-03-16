@@ -4,6 +4,6 @@ const controller = require("../../controllers/users.premium.controller");
 
 const router = Router();
 
-router.patch("/premium/:uid", controller.swapRole);
+router.patch("/premium/:uid", middleware.swapRole, controller.swapRole);
 
 module.exports = router;
