@@ -11,6 +11,7 @@ const viewsRouter = require("./routes/views/views.routes.js");
 const githubLoginViewRouter = require("./routes/views/github-log.views.js");
 const sessionsRouter = require("./routes/api/sessions.router.js");
 const usersViewRouter = require("./routes/views/users.views.router.js");
+const usersPremiumRouter = require("./routes/api/users.premium.routes.js");
 const { ProductManager, Product } = require("../products.js");
 const productRouter = require("./routes/api/products.routes.js");
 const cartRouter = require("./routes/api/cart.routes.js");
@@ -68,6 +69,7 @@ app.use("/api/products", productRouter);
 app.use("/", viewsRouter);
 app.use("/api/carts", cartRouter);
 app.use("/users", usersViewRouter);
+app.use("/api/users", usersPremiumRouter);
 app.use("/api/sessions", sessionsRouter);
 app.use("/github", githubLoginViewRouter);
 

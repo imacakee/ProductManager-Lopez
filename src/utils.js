@@ -5,6 +5,7 @@ const { faker } = require("@faker-js/faker");
 const nodemailer = require("nodemailer");
 const winston = require("winston");
 const { gmailAccount, gmailPassword, privateKey } = require("./config/config");
+const productService = require("./services/product.service");
 
 console.log("CREDENCIALES GMAIL");
 console.log(gmailAccount);
@@ -146,21 +147,47 @@ const passportCall = (strategy) => {
   };
 };
 
-const authorization = (role) => {
+const authorization = (roles) => {
   return async (req, res, next) => {
     if (!req.user) {
       req.logger.warn("No user found inside request object");
       return res.status(401).send("Unauthorized: User not found in JWT");
     }
 
-    if (req.user.role !== role) {
-      req.logger.warn("Users role doesn't match required permissions");
-      return res
-        .status(403)
-        .send("Forbidden: El usuario no tiene permisos con este rol.");
+    if (typeof roles === "object") {
+      // hay más de un rol para chequear
+      if (!roles.includes(req.user.role)) {
+        req.logger.warn("Users role doesn't match required permissions");
+        return res
+          .status(403)
+          .send("Forbidden: El usuario no tiene permisos con este rol.");
+      }
+    } else {
+      // Hay un rol solo para chequear
+      if (req.user.role !== roles) {
+        req.logger.warn("Users role doesn't match required permissions");
+        return res
+          .status(403)
+          .send("Forbidden: El usuario no tiene permisos con este rol.");
+      }
     }
+
     next();
   };
+};
+
+const adminOrOwner = async (req, res, next) => {
+  const product = await productService.getProductById(req.params.pid);
+  if (
+    !product?.id ||
+    (product.owner !== req.user.email && req.user.role !== "admin")
+  ) {
+    req.logger.warn("Users role doesn't match required permissions");
+    return res
+      .status(403)
+      .send("Forbidden: El usuario no tiene permisos con este rol.");
+  }
+  next();
 };
 
 const generateProduct = () => {
@@ -187,4 +214,5 @@ module.exports = {
   generateProduct,
   sendEmail,
   addLogger,
+  adminOrOwner,
 };

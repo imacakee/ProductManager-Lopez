@@ -1,6 +1,6 @@
 const productDao = require("../services/product.service");
 const ticketDao = require("../services/ticket.service");
-const nodemailer = require("nodemailer");
+// const nodemailer = require("nodemailer");
 const { sendEmail } = require("../utils");
 
 class CartRepository {
