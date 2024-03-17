@@ -1,6 +1,5 @@
 const productDao = require("../services/product.service");
 const ticketDao = require("../services/ticket.service");
-// const nodemailer = require("nodemailer");
 const { sendEmail } = require("../utils");
 
 class CartRepository {
@@ -54,9 +53,16 @@ class CartRepository {
     }
   }
 
-  async modifyProduct(id, productId, amountToModify) {
+  async modifyProduct(id, productId, amountToModify, user) {
     const cart = await this.dao.getCartById(id);
     const item = cart?.items.find((item) => item.product == productId);
+    const product = await productDao.getProductById(productId);
+    if (user.role === "premium" && product.owner === user.email) {
+      return {
+        error: true,
+        message: "Usuarios premium no pueden agregar sus propios productos",
+      };
+    }
     if (item) {
       item.quantity += +amountToModify;
       const indexOfItem = cart.items.indexOf(item);

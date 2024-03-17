@@ -33,7 +33,8 @@ controller.modifyProduct = async (req, res) => {
   const result = await service.modifyProduct(
     req.params.cid,
     req.params.pid,
-    req.query.amount
+    req.query.amount,
+    req.user
   );
   res.json(result);
 };
