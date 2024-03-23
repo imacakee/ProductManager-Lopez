@@ -23,7 +23,6 @@ const transporter = nodemailer.createTransport({
 
 const emailOptionsToReset = {
   from: gmailAccount,
-  // to: gmailAccount,
   subject: "reset password",
 };
 
@@ -62,12 +61,10 @@ const sendEmailToResetPassword = (req, res) => {
     });
   } catch (error) {
     console.error(error);
-    res
-      .status(500)
-      .send({
-        error: error,
-        message: "no se pudo enviar el email desde:" + gmailAccount,
-      });
+    res.status(500).send({
+      error: error,
+      message: "no se pudo enviar el email desde:" + gmailAccount,
+    });
   }
 };
 
@@ -84,8 +81,6 @@ const resetPassword = (req, res) => {
     console.log("expiration time completed");
     return res.redirect("/reset-password");
   }
-
-  //hacemos lógica de update password en el caso de que no haya vencido
 
   res.send("<h1>Start reset password process</h1>");
 };
