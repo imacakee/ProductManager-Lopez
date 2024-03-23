@@ -7,14 +7,15 @@ const session = require("express-session");
 const cookieParser = require("cookie-parser");
 const MongoStore = require("connect-mongo");
 const initializePassport = require("./config/passport.config.js");
-const viewsRouter = require("./routes/views/views.routes.js");
+const viewsRouter = require("./routes/views/views.router.js");
 const githubLoginViewRouter = require("./routes/views/github-log.views.js");
 const sessionsRouter = require("./routes/api/sessions.router.js");
 const usersViewRouter = require("./routes/views/users.views.router.js");
-const usersPremiumRouter = require("./routes/api/users.premium.routes.js");
+const usersPremiumRouter = require("./routes/api/users.premium.router.js");
 const { ProductManager, Product } = require("../products.js");
-const productRouter = require("./routes/api/products.routes.js");
-const cartRouter = require("./routes/api/cart.routes.js");
+const productRouter = require("./routes/api/products.router.js");
+const cartRouter = require("./routes/api/cart.router.js");
+const emailRouter = require("./routes/views/email.router.js");
 const MongoSingleton = require("./config/mongodb.singleton.js");
 const { port, mongoUrl } = require("./config/config.js");
 const { addLogger } = require("./utils.js");
@@ -71,6 +72,7 @@ app.use("/api/carts", cartRouter);
 app.use("/users", usersViewRouter);
 app.use("/api/users", usersPremiumRouter);
 app.use("/api/sessions", sessionsRouter);
+app.use("/api/email", emailRouter);
 app.use("/github", githubLoginViewRouter);
 
 io.on("connection", async (socket) => {
