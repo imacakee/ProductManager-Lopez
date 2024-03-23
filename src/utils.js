@@ -2,6 +2,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const passport = require("passport");
 const { faker } = require("@faker-js/faker");
+const { v4 } = require("uuid");
 const nodemailer = require("nodemailer");
 const winston = require("winston");
 const { gmailAccount, gmailPassword, privateKey } = require("./config/config");
@@ -19,6 +20,70 @@ const transporter = nodemailer.createTransport({
     pass: gmailPassword,
   },
 });
+
+const emailOptionsToReset = {
+  from: gmailAccount,
+  subject: "reset password",
+};
+
+const temporaryEmail = {};
+
+const sendEmailToResetPassword = (req, res) => {
+  try {
+    const { email } = req.body;
+    if (!email) {
+      return res.status(400).send("email not provided");
+    }
+    //generamos token/id random
+    const token = v4();
+    const link = `http://localhost:8080/api/email/reset-password/${token}`;
+
+    console.log("el objeto para el mail", emailOptionsToReset);
+
+    temporaryEmail[token] = {
+      email,
+      //representa una hora en milisegundos
+      expirationTime: new Date(Date.now() + 60 * 60 * 1000),
+    };
+    console.log(temporaryEmail);
+
+    emailOptionsToReset.to = email;
+    emailOptionsToReset.html = `To reset your password, click on the following link: <a href="${link}"> Reset password</a>`;
+
+    transporter.sendMail(emailOptionsToReset, (error, info) => {
+      if (error) {
+        console.log(error);
+        res.status(500).send({ message: "error", payload: error });
+      }
+      console.log("las keys de la info", Object.keys(info));
+      console.log("message sent: %s", info?.messageId);
+      res.send({ message: "success", payload: info });
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({
+      error: error,
+      message: "no se pudo enviar el email desde:" + gmailAccount,
+    });
+  }
+};
+
+const resetPassword = (req, res) => {
+  const token = req.params.token;
+  const email = temporaryEmail[token];
+  console.log(email);
+
+  const now = new Date();
+  const expirationTime = email?.expirationTime;
+
+  if (now > expirationTime || !expirationTime) {
+    delete temporaryEmail[token];
+    console.log("expiration time completed");
+    return res.redirect("/reset-password");
+  }
+
+  res.send("<h1>Start reset password process</h1>");
+};
 
 transporter.verify(function (error, success) {
   if (error) {
@@ -215,4 +280,6 @@ module.exports = {
   sendEmail,
   addLogger,
   adminOrOwner,
+  sendEmailToResetPassword,
+  resetPassword,
 };
