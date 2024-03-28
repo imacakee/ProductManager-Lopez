@@ -1,0 +1,19 @@
+components:
+  schemas:
+    Cart:
+      type: object
+      properties:
+        _id:
+          type: string
+          readOnly: true
+        items:
+          type: array
+          items:
+            type: object
+            properties:
+              product:
+                type: string
+                description: products id
+              quantity: 
+                type: number
+                description: products amount

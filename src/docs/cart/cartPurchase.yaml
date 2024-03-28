@@ -1,0 +1,19 @@
+paths:
+  api/product/{cid}/purchase:
+    post:
+      summary: Purchases cart's content
+      tags:
+        - Carts
+      parameters:
+        - name: cid
+          in: path
+          description: path parameter takes the cart id
+          required: true
+          type: string
+      responses:
+        "200":
+          description: The updated cart
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Cart"

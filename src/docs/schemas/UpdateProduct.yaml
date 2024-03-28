@@ -1,0 +1,32 @@
+components:
+  requestBodies:
+    UpdateProduct:
+      type: object
+      properties:
+        title:
+          type: string
+          description: name of the product
+        description:
+          type: string
+          description: description of the product
+        price:
+          type: number
+          description: price of the product
+        status:
+          type: boolean
+          description: status of the product
+        thumbnail:
+          type: string
+          description: thumbnail of the product
+        code:
+          type: string
+          description: code of the product
+        stock:
+          type: number
+          description: product in stock
+        category:
+          type: string
+          description: category of the product
+        owner:
+          type: string
+          description: owner of the product

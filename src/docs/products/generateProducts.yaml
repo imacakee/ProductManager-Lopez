@@ -1,0 +1,15 @@
+paths:
+  api/product/mockingproducts:
+    get: 
+      summary: Returns 100 products
+      tags: 
+        - Productos
+      responses:
+        "200":
+          description: Returns 100 products
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Product"

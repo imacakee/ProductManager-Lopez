@@ -1,0 +1,15 @@
+paths:
+  api/product/{cid}:
+    delete: 
+      summary: Deletes the cart with given id
+      tags: 
+        - Carts
+      parameters: 
+      - name: cid
+        in: path
+        description: path parameter takes the cart id
+        required: true
+        type: string
+      responses:
+        "204":
+          description: No additional info attached

@@ -1,0 +1,18 @@
+components:
+  requestBodies:
+    NewCart:
+      type: object
+      required:
+        - title
+        - description
+        - price
+        - status
+        - thumbnail
+        - code
+        - stock
+        - category
+        - owner
+      properties:
+        title:
+          type: string
+          description: name of the product

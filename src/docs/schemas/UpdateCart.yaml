@@ -1,0 +1,7 @@
+components:
+  requestBodies:
+    UpdateCart:
+      type: object
+      properties:
+        newCart:
+          $ref: "#/components/schemas/Cart"
