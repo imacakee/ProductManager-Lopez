@@ -1,5 +1,7 @@
 const ticketModel = require("../models/ticket.model.js");
+const cartService = require("../services/cart.service.js");
 const CustomError = require("../services/errors/custom.error.js");
+const productService = require("../services/product.service.js");
 const usersService = require("../services/users.service");
 const { isValidPassword, generateJWToken } = require("../utils.js");
 const controller = {};
@@ -53,6 +55,39 @@ controller.login = async (req, res) => {
     req.logger.error(`Error while loggin in: ${error}`);
     return CustomError.createError({
       cause: "error while loggin i",
+      message: { error },
+      code: 500,
+    });
+  }
+};
+
+controller.makeAdmin = async (req, res) => {
+  try {
+    const user = await usersService.findByEmail(req.params.email);
+    const updatedUser = await usersService.updateUser(user._id, {
+      role: "admin",
+    });
+    res.json(updatedUser);
+  } catch (error) {
+    console.log(error);
+    return CustomError.createError({
+      cause: "error while making user admin",
+      message: { error },
+      code: 500,
+    });
+  }
+};
+
+controller.clearDb = async (req, res) => {
+  try {
+    await cartService.clear();
+    await productService.clear();
+    await usersService.clear();
+    res.send({ message: "database cleared" });
+  } catch (error) {
+    console.log(error);
+    return CustomError.createError({
+      cause: "error while clearing db",
       message: { error },
       code: 500,
     });

@@ -5,7 +5,12 @@ const { faker } = require("@faker-js/faker");
 const { v4 } = require("uuid");
 const nodemailer = require("nodemailer");
 const winston = require("winston");
-const { gmailAccount, gmailPassword, privateKey } = require("./config/config");
+const {
+  gmailAccount,
+  gmailPassword,
+  privateKey,
+  environment,
+} = require("./config/config");
 const productService = require("./services/product.service");
 
 console.log("CREDENCIALES GMAIL");
@@ -255,7 +260,16 @@ const adminOrOwner = async (req, res, next) => {
   next();
 };
 
-const generateProduct = () => {
+const duringTests = async (req, res, next) => {
+  if (!environment === "test") {
+    req.logger.warn("This endpoint is only accesible during unit tests");
+    return res.status(403).send("Forbidden");
+  }
+  next();
+};
+
+const generateProduct = (email = null) => {
+  let owner = email ? email : faker.internet.email();
   return {
     title: faker.commerce.productName(),
     description: faker.commerce.productDescription(),
@@ -265,6 +279,7 @@ const generateProduct = () => {
     code: faker.string.uuid(),
     stock: faker.number.int({ min: 1, max: 9 }),
     category: faker.commerce.department(),
+    owner,
   };
 };
 
@@ -282,4 +297,5 @@ module.exports = {
   adminOrOwner,
   sendEmailToResetPassword,
   resetPassword,
+  duringTests
 };
