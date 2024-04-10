@@ -28,6 +28,24 @@ class UserService {
       console.log(error);
     }
   }
+
+  async destroyUser(id) {
+    try {
+      return await userModel.findByIdAndDelete(id, { new: true });
+    } catch (error) {
+      console.log(error);
+      return null;
+    }
+  }
+
+  async clear() {
+    try {
+      return await userModel.deleteMany();
+    } catch (error) {
+      console.log(error);
+      return null;
+    }
+  }
 }
 
 module.exports = new UserService();

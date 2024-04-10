@@ -7,7 +7,13 @@ const userModel = require("../models/user.model.js");
 const { cartModel } = require("../models/cart.model.js");
 const { createHash } = require("../utils.js");
 const { generateUserErrorInfo } = require("../services/errors/info.js");
-const { privateKey, clientId, clientSecret, callbackUrl } = require("./config.js");
+const {
+  privateKey,
+  clientId,
+  clientSecret,
+  callbackUrl,
+} = require("./config.js");
+const CustomError = require("../services/errors/custom.error.js");
 
 const localStrategy = passportLocal.Strategy;
 
@@ -85,6 +91,7 @@ const initializePassport = () => {
       { passReqToCallback: true, usernameField: "email" },
       async (req, username, password, done) => {
         const { first_name, last_name, email, age } = req.body;
+        console.log(req.body);
         try {
           if (!first_name || !email) {
             CustomError.createError({

@@ -12,9 +12,23 @@ program.parse();
 console.log("Mode Option: ", program.opts().mode);
 
 const environment = program.opts().mode;
+let path = "";
+
+switch (environment) {
+  case "production":
+    path = ".env.production";
+    break;
+  case "test":
+    path = ".env.test";
+    break;
+  default:
+    path = ".env.development";
+}
+
+console.log("el environment es", environment);
 
 dotenv.config({
-  path: environment === "production" ? ".env.production" : ".env.development",
+  path,
 });
 
 module.exports = {

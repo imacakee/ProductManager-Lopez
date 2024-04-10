@@ -1,3 +1,5 @@
+const cartDao = require("../services/cart.service");
+
 class UserRepository {
   constructor(dao) {
     this.dao = dao;
@@ -22,6 +24,12 @@ class UserRepository {
       result = await this.updateUser(id, updatedUser);
     }
     return result;
+  }
+
+  async destroyUser(email) {
+    const user = await this.dao.findByEmail(email);
+    await cartDao.deleteCart(user.cartId);
+    return await this.dao.destroyUser(user._id);
   }
 }
 

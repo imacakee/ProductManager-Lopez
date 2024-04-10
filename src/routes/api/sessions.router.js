@@ -12,4 +12,8 @@ router.get("/current", middleware.current, controller.current);
 
 router.get("/logout", controller.logout);
 
+router.post("/makeAdmin/:email", middleware.makeAdmin, controller.makeAdmin);
+
+router.post("/clearDb", middleware.clearDb, controller.clearDb);
+
 module.exports = router;

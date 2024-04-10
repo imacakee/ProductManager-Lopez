@@ -11,20 +11,24 @@ controller.list = async (req, res) => {
 };
 
 controller.generateProducts = (req, res) => {
+  const email = req.user?.email ? req.user.email : req.query?.email;
   const result = [];
   for (let i = 0; i <= 99; i++) {
-    result.push(generateProduct());
+    result.push(generateProduct(email));
   }
   return res.json(result);
 };
 
 controller.getById = async (req, res) => {
-  const result = await service.getProductById(req.params.id);
+  const result = await service.getProductById(req.params.pid);
   res.json(result);
 };
 
 controller.create = async (req, res) => {
-  const result = await service.addProduct({...req.body, owner: req.user.email});
+  const result = await service.addProduct({
+    ...req.body,
+    owner: req.user.email,
+  });
   res.json(result);
 };
 

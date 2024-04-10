@@ -3,7 +3,7 @@ const { productModel } = require("../models/product.model");
 class ProductDao {
   async addProduct(newProduct) {
     try {
-      await productModel.create(newProduct);
+      return await productModel.create(newProduct);
     } catch (error) {
       console.log(error);
       return { message: "Error creating product", error };
@@ -36,6 +36,14 @@ class ProductDao {
   async deleteProduct(id) {
     try {
       return await productModel.findByIdAndDelete(id);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async clear() {
+    try {
+      return await productModel.deleteMany();
     } catch (error) {
       console.log(error);
     }

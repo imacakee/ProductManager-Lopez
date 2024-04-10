@@ -103,6 +103,7 @@ io.on("connection", async (socket) => {
 });
 
 //TODO: MongoSingleton
+console.log("La url de mongo es", mongoUrl);
 const mongoInstance = async () => {
   try {
     await MongoSingleton.getInstance();
@@ -112,3 +113,5 @@ const mongoInstance = async () => {
 };
 mongoInstance();
 mongoInstance();
+
+module.exports = { mongoInstance };

@@ -63,6 +63,15 @@ class CartDao {
       console.log(error);
     }
   }
+
+  async clear() {
+    try {
+      return await cartModel.deleteMany();
+    } catch (error) {
+      console.log(error);
+      return null;
+    }
+  }
 }
 
 module.exports = new CartDao();

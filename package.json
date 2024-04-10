@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "start-test": "nodemon src/server.js --mode test",
+    "test": "mocha test/index.test.js",
     "dev": "nodemon src/server.js"
   },
   "repository": {
@@ -44,6 +45,9 @@
     "winston": "^3.12.0"
   },
   "devDependencies": {
-    "@types/uuid": "^9.0.8"
+    "@types/uuid": "^9.0.8",
+    "chai": "4.4.1",
+    "mocha": "^10.4.0",
+    "supertest": "^6.3.4"
   }
 }
