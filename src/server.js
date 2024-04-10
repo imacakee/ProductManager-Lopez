@@ -6,6 +6,8 @@ const { Server } = require("socket.io");
 const session = require("express-session");
 const cookieParser = require("cookie-parser");
 const MongoStore = require("connect-mongo");
+const swaggerJSDoc = require("swagger-jsdoc");
+const swaggerUIExpress = require("swagger-ui-express");
 const initializePassport = require("./config/passport.config.js");
 const viewsRouter = require("./routes/views/views.router.js");
 const githubLoginViewRouter = require("./routes/views/github-log.views.js");
@@ -54,6 +56,21 @@ app.use(
     saveUninitialized: true,
   })
 );
+
+const swaggerOptions = {
+  definition: {
+    openapi: "3.0.1",
+    info: {
+      title: "Documentación API Adopme",
+      description: "Documentación para uso de swagger",
+    },
+  },
+  apis: [`./src/docs/**/*.yaml`],
+};
+
+const specs = swaggerJSDoc(swaggerOptions);
+//declaramos la api donde vamos a tener la parte gráfica
+app.use("/apidocs", swaggerUIExpress.serve, swaggerUIExpress.setup(specs));
 
 app.use(cookieParser("CoderS3cr3tC0d3"));
 
