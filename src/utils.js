@@ -12,6 +12,8 @@ const {
   environment,
 } = require("./config/config");
 const productService = require("./services/product.service");
+const multer = require("multer");
+const usersService = require("./services/users.service");
 
 console.log("CREDENCIALES GMAIL");
 console.log(gmailAccount);
@@ -246,6 +248,41 @@ const authorization = (roles) => {
   };
 };
 
+const neededDocuments = (documents) => {
+  return async (req, res, next) => {
+    if (!req.user) {
+      req.logger.warn("No user found inside request object");
+      return res.status(401).send("Unauthorized: User not found in JWT");
+    }
+
+    if (!req.user.role === "premium") {
+      const user = await usersService.findByEmail(req.user.email);
+      const documentNames = user.documents.reduce((acc, curr) => {
+        return acc.concat(curr.name);
+      }, "");
+
+      let hasAllDocuments = true;
+
+      documents.forEach((doc) => {
+        if (!documentNames.includes(doc)) {
+          hasAllDocuments = false;
+        }
+      });
+
+      if (!hasAllDocuments) {
+        req.logger.warn("Users role doesn't match required permissions");
+        return res
+          .status(403)
+          .send(
+            "Forbidden: El usuario no cuenta con todos los documentos necesarios para pasar a premium."
+          );
+      }
+    }
+
+    next();
+  };
+};
+
 const adminOrOwner = async (req, res, next) => {
   const product = await productService.getProductById(req.params.pid);
   if (
@@ -283,6 +320,48 @@ const generateProduct = (email = null) => {
   };
 };
 
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    switch (file.fieldname) {
+      case "perfil":
+        cb(null, "public/uploads/profiles");
+        break;
+      case "productos":
+        cb(null, "public/uploads/products");
+        break;
+      default:
+        cb(null, "public/uploads/documents");
+        break;
+    }
+  },
+  filename: (req, file, cb) => {
+    const originalname = file.originalname.split(".");
+    const extension = originalname[originalname.length - 1];
+
+    switch (file.fieldname) {
+      case "perfil":
+        cb(null, `${req.params.uid}.${extension}`);
+        break;
+      case "productos":
+        if (!req.query.productId) {
+          cb(
+            new Error(
+              "When uploading a product's image a productId query param is needed"
+            )
+          );
+        }
+        cb(null, `${req.query.productId}.${extension}`);
+        break;
+      case "documentos":
+        cb(null, `${req.params.uid}_${file.originalname}`);
+        break;
+      default:
+        cb(null, `${req.params.uid}_${file.fieldname}.${extension}`);
+        break;
+    }
+  },
+});
+
 module.exports = {
   validateUser,
   createHash,
@@ -297,5 +376,7 @@ module.exports = {
   adminOrOwner,
   sendEmailToResetPassword,
   resetPassword,
-  duringTests
+  duringTests,
+  storage,
+  neededDocuments,
 };

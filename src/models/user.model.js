@@ -26,6 +26,13 @@ const schema = new mongoose.Schema({
     ref: "carts",
     required: true,
   },
+  documents: [
+    {
+      name: { type: String },
+      reference: { type: String },
+    },
+  ],
+  last_connection: Date,
 });
 
 const userModel = mongoose.model(collection, schema);

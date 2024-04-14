@@ -10,7 +10,7 @@ router.post("/login", controller.login);
 
 router.get("/current", middleware.current, controller.current);
 
-router.get("/logout", controller.logout);
+router.get("/logout", middleware.logout, controller.logout);
 
 router.post("/makeAdmin/:email", middleware.makeAdmin, controller.makeAdmin);
 
