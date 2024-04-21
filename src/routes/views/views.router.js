@@ -15,4 +15,8 @@ router.get("/products", middleware.products, (req, res) => {
   res.render("products", {});
 });
 
+router.get("/cart", middleware.cart, (req, res) => {
+  res.render("cart", {});
+});
+
 module.exports = router;

@@ -10,7 +10,7 @@ controller.list = async (req, res) => {
 };
 
 controller.getById = async (req, res) => {
-  const result = await service.getCartById(req.params.cid);
+  const result = await service.getCartById(req.params.cid, req.query.populate);
   res.json(result);
 };
 

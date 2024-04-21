@@ -87,8 +87,8 @@ const loadProducts = (response) => {
         <td>${prd.code}</td>
         <td>${prd.stock}</td>
         <td>${prd.category}</td>
-        <td><button onClick="addProduct('${prd._id}')" >add to cart</button>
-        <button onClick="deleteProduct('${prd._id}')">delete</button></td>
+        <td><button class="btn btn-success" onClick="addProduct('${prd._id}')" >add to cart</button>
+        <button class="btn btn-danger" onClick="deleteProduct('${prd._id}')">delete</button></td>
         </tr>
         `;
   });
