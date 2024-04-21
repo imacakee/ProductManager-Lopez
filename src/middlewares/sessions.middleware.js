@@ -1,4 +1,4 @@
-const { passportCall, duringTests } = require("../utils");
+const { passportCall, duringTests, authToken } = require("../utils");
 const passport = require("passport");
 
 const middleware = {};
@@ -6,6 +6,8 @@ const middleware = {};
 middleware.register = [passport.authenticate("register", { session: false })];
 
 middleware.current = [passportCall("jwt")];
+
+middleware.logout = [passportCall("jwt")]
 
 middleware.makeAdmin = [duringTests];
 

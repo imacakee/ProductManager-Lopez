@@ -31,6 +31,23 @@ class UserRepository {
     await cartDao.deleteCart(user.cartId);
     return await this.dao.destroyUser(user._id);
   }
+
+  async uploadFile(files, uid, queryParams) {
+    const documents = [];
+    for (const [key, fileArray] of Object.entries(files)) {
+      if (key !== "productos") {
+        fileArray.forEach((file) => {
+          documents.push({ name: file.filename, reference: file.path });
+        });
+      }
+    }
+
+    const user = await this.findById(uid);
+
+    const newDocuments = [...user.documents, ...documents];
+
+    return await this.updateUser(uid, { documents: newDocuments });
+  }
 }
 
 module.exports = UserRepository;

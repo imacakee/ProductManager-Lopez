@@ -34,6 +34,9 @@ controller.login = async (req, res) => {
       });
     }
 
+    await usersService.updateUser(user._id, {
+      last_connection: new Date().toString(),
+    });
     const tokenUser = {
       name: `${user.first_name} ${user.last_name}`,
       email: user.email,
@@ -94,7 +97,13 @@ controller.clearDb = async (req, res) => {
   }
 };
 
-controller.logout = (req, res) => {
+controller.logout = async (req, res) => {
+  const user = await usersService.findByEmail(req.user.email);
+
+  await usersService.updateUser(user._id, {
+    last_connection: new Date().toString(),
+  });
+
   req.session.destroy((error) => {
     if (error) {
       res.json({ error: "Error logout", msg: "Error al cerrar la session" });
