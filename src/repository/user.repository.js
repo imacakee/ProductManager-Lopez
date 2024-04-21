@@ -5,6 +5,10 @@ class UserRepository {
     this.dao = dao;
   }
 
+  async findAll(query) {
+    return await this.dao.findAll(query);
+  }
+
   async findById(id) {
     return await this.dao.findById(id);
   }
@@ -47,6 +51,10 @@ class UserRepository {
     const newDocuments = [...user.documents, ...documents];
 
     return await this.updateUser(uid, { documents: newDocuments });
+  }
+
+  async removeInactive() {
+    return await this.dao.removeInactive();
   }
 }
 

@@ -100,18 +100,29 @@ transporter.verify(function (error, success) {
   }
 });
 
-const sendEmail = (email, ticket) => {
-  const html = `
-  <h1>Gracias por su compra!<h1/>
-  <h3>Codigo nro: ${ticket.code}<h3/>
-  <h3>Coste total: ${ticket.amount}<h3/>
-  <h3>Fecha de compra: ${ticket.purchaseDate}<h3/>
-  `;
+const sendEmail = (email, ticket = null) => {
+  let html = "";
+  let subject = "";
+  if (ticket) {
+    html = `
+    <h1>Gracias por su compra!<h1/>
+    <h3>Codigo nro: ${ticket.code}<h3/>
+    <h3>Coste total: ${ticket.amount}<h3/>
+    <h3>Fecha de compra: ${ticket.purchaseDate}<h3/>
+    `;
+    subject = "Ticket de compra";
+  } else {
+    html = `
+    <h1>Cuenta dada de baja<h1/>
+    <p>Lamentamos informale que debido a inactividad hemos dado de baja su cuenta</p>
+    `;
+    subject = "Desactivación de cuenta"
+  }
 
   const options = {
     from: gmailAccount,
     to: email,
-    subject: "Ticket de compra",
+    subject,
     html,
   };
 

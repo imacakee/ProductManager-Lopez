@@ -1,8 +1,14 @@
 const { faker } = require("@faker-js/faker");
 const userDao = require("../services/users.service");
 const UserRepository = require("../repository/user.repository");
+const { sendEmail } = require("../utils");
 const service = new UserRepository(userDao);
 const controller = {};
+
+controller.list = async (req, res) => {
+  const result = await service.findAll();
+  res.json(result);
+};
 
 controller.fakeUser = (req, res) => {
   let person = faker.person.fullName({ firstName: String, lastName: String });
@@ -19,6 +25,19 @@ controller.swapRole = async (req, res) => {
 
 controller.uploadFile = async (req, res) => {
   const result = await service.uploadFile(req.files, req.params.uid, req.query);
+  res.json(result);
+};
+
+controller.removeInactive = async (req, res) => {
+  const twoDaysAgo = new Date(Date.now() - 2 * 24 * 60 * 60 * 1000);
+  const query = {
+    last_connection: { $lte: twoDaysAgo },
+  };
+  const idleUsers = await service.findAll(query);
+  idleUsers.forEach((user) => {
+    sendEmail(user.email);
+  });
+  const result = await service.removeInactive();
   res.json(result);
 };
 
