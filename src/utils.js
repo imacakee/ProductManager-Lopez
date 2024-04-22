@@ -116,7 +116,7 @@ const sendEmail = (email, ticket = null) => {
     <h1>Cuenta dada de baja<h1/>
     <p>Lamentamos informale que debido a inactividad hemos dado de baja su cuenta</p>
     `;
-    subject = "Desactivación de cuenta"
+    subject = "Desactivación de cuenta";
   }
 
   const options = {
@@ -134,6 +134,28 @@ const sendEmail = (email, ticket = null) => {
     }
   });
 };
+
+function sendDeleteProductEmail(email, title, id) {
+  const html = `
+  <h1>Estimado Cliente</h1>
+  <p>Lamentamos comunicarle que se borrará su producto con id ${id} y titulo: ${title}</p>
+  `;
+
+  const options = {
+    from: gmailAccount,
+    to: email,
+    subject: "Borrado de producto",
+    html,
+  };
+
+  return transporter.sendMail(options, (error, info) => {
+    if (error) {
+      console.log(error);
+    } else {
+      console.log(`Email sent to ${email}`);
+    }
+  });
+}
 
 const validateUser = (req, res, next) => {
   if (!req.session.user) {
@@ -383,6 +405,7 @@ module.exports = {
   authorization,
   generateProduct,
   sendEmail,
+  sendDeleteProductEmail,
   addLogger,
   adminOrOwner,
   sendEmailToResetPassword,

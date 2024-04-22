@@ -1,5 +1,6 @@
 const service = require("../services/product.service");
-const { generateProduct } = require("../utils");
+const usersService = require("../services/users.service");
+const { generateProduct, sendDeleteProductEmail } = require("../utils");
 
 const controller = {};
 
@@ -20,7 +21,7 @@ controller.generateProducts = (req, res) => {
 };
 
 controller.getById = async (req, res) => {
-  const result = await service.getProductById(req.params.pid);
+  const result = req.params.pid;
   res.json(result);
 };
 
@@ -38,6 +39,13 @@ controller.update = async (req, res) => {
 };
 
 controller.delete = async (req, res) => {
+  const product = await service.getProductById(req.params.pid);
+  const ownerEmail = product.owner;
+  const owner = await usersService.findByEmail(ownerEmail);
+  if (owner.role === "premium") {
+    sendDeleteProductEmail(ownerEmail, product.title, product._id);
+  }
+
   const result = await service.deleteProduct(req.params.pid);
   res.json(result);
 };

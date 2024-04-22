@@ -13,10 +13,10 @@
   </button>
   <div class="collapse navbar-collapse" id="navbarNav">
     <ul class="navbar-nav">
-      <li class="nav-item">
+      <li class="nav-item active">
         <a class="nav-link" href="/products">Products</a>
       </li>
-      <li class="nav-item active">
+      <li class="nav-item">
         <a class="nav-link" href="/cart">Cart</a>
       </li>
       <li class="nav-item">
@@ -32,26 +32,22 @@
 </nav>
 
 <div class="p-4">
+
+  <h2 class="py-4">Ecommerce Users</h2>
   <table class="table">
     <thead>
       <tr>
-        <th>title</th>
-        <th>description</th>
-        <th>code</th>
-        <th>price</th>
-        <th>amount</th>
-        <th colspan="3">Actions</th>
+        <th>Name</th>
+        <th>Last Name</th>
+        <th>Email</th>
+        <th>Role</th>
+        <th>Actions</th>
       </tr>
     </thead>
-    <tbody id="cart_items_container">
+    <tbody id="users_container">
 
     </tbody>
   </table>
-  <div class="mt-2 d-flex justify-content-end">
-    <button class="btn btn-success" onClick="purchase()">
-      Purchase $$$
-    </button>
-  </div>
-</div>
 
-<script src="/js/cart.js"></script>
+</div>
+<script src="/js/admin.js"></script>

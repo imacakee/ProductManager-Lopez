@@ -41,4 +41,16 @@ controller.removeInactive = async (req, res) => {
   res.json(result);
 };
 
+controller.updateRole = async (req, res) => {
+  const result = await service.updateUser(req.params.uid, {
+    role: req.body.role,
+  });
+  res.json(result);
+};
+
+controller.deleteUser = async (req, res) => {
+  const result = await service.destroyUser(req.params.email);
+  res.json(result);
+};
+
 module.exports = controller;
