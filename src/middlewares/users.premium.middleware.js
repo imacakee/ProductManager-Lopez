@@ -43,4 +43,8 @@ middleware.swapRole = [
   neededDocuments(["identificacion", "estado_cuenta", "comprobante_domicilio"]),
 ];
 
+middleware.updateRole = [authToken, authorization(["admin"])];
+
+middleware.deleteUser = [authToken, authorization(["admin"])];
+
 module.exports = middleware;

@@ -15,12 +15,14 @@ class CartRepository {
     return await this.dao.getCarts(limit, page);
   }
 
-  async getCartById(id) {
-    return await this.dao.getCartById(id);
+  async getCartById(id, populate) {
+    return await this.dao.getCartById(id, populate);
   }
+
   async purchase(cartId, email) {
     const cart = await this.dao.getCartById(cartId);
     let totalAmount = 0;
+    const goodPurchases = [];
     const failedPurchases = [];
 
     for (const [i, item] of cart.items?.entries()) {
@@ -29,12 +31,16 @@ class CartRepository {
       if (product.stock >= item.quantity) {
         const updatedStock = product.stock - item.quantity;
         await productDao.updateProduct(item.product, { stock: updatedStock });
-        cart.items.splice(i, 1);
+        goodPurchases.push(item.product);
         totalAmount += product.price * item.quantity;
       } else {
         failedPurchases.push(product._id);
       }
     }
+
+    cart.items = cart.items.filter(
+      (item) => !goodPurchases.includes(item.product)
+    );
 
     await this.dao.updateCart(cartId, cart);
     const newTicket = { amount: totalAmount, purchaser: email };

@@ -35,8 +35,9 @@ class CartDao {
     }
   }
 
-  async getCartById(id) {
-    return await cartModel.findById(id);
+  async getCartById(id, populate = false) {
+    const pop = populate ? "items.product" : "";
+    return await cartModel.findById(id).populate(pop).lean();
   }
 
   async modifyProduct(id, items) {

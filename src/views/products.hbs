@@ -1,50 +1,135 @@
-<div>
-  <h1>Create new product</h1>
-  <label for="title">Title</label><br />
-  <input type="text" id="prd_title" name="title" />
-  <br /><br />
-  <label for="description">Description</label><br />
-  <input type="text" id="prd_description" name="description" />
-  <br /><br />
-  <label for="price">Price</label><br />
-  <input type="text" id="prd_price" name="price" />
-  <br /><br />
-  <label for="thumbnail">Thumbnail</label><br />
-  <input type="text" id="prd_thumbnail" name="thumbnail" /><br /><br />
-  <label for="code">Code</label><br />
-  <input type="text" id="prd_code" name="code" />
-  <br /><br />
-  <label for="stock">Stock</label><br />
-  <input type="text" id="prd_stock" name="stock" />
-  <br /><br />
-  <label for="category">Category</label><br />
-  <input type="text" id="prd_category" name="category" />
-  <br /><br />
-  <button onClick="submitForm()">Submit</button>
-  <hr />
+<nav class="navbar navbar-expand-lg navbar-light bg-light mx-2">
+  <a class="navbar-brand" href="#">Product Manager</a>
+  <button
+    class="navbar-toggler"
+    type="button"
+    data-toggle="collapse"
+    data-target="#navbarNav"
+    aria-controls="navbarNav"
+    aria-expanded="false"
+    aria-label="Toggle navigation"
+  >
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNav">
+    <ul class="navbar-nav">
+      <li class="nav-item active">
+        <a class="nav-link" href="/products">Products</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/cart">Cart</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/users/">Profile</a>
+      </li>
+      {{#if isAdmin}}
+        <li class="nav-item">
+          <a class="nav-link" href="/admin">Admin Panel</a>
+        </li>
+      {{/if}}
+    </ul>
+  </div>
+</nav>
+
+<div class="p-4">
+
+  <div class="d-flex align-items-center gap-2">
+    <button
+      class="btn btn-primary"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#createProductCollapse"
+      aria-expanded="false"
+      aria-controls="createProductCollapse"
+    >
+      Add new product
+    </button>
+    <button class="btn btn-success" onClick="purchase()">Purchase</button>
+  </div>
+
+  <div class="collapse" id="createProductCollapse">
+    <form class="w-75 mx-auto">
+      <h1>Create new product</h1>
+      <div class="form-group">
+        <label for="title">Title</label><br />
+        <input type="text" class="form-control" id="prd_title" name="title" />
+      </div>
+      <br /><br />
+      <div class="form-group">
+        <label for="description">Description</label><br />
+        <input
+          type="text"
+          class="form-control"
+          id="prd_description"
+          name="description"
+        />
+      </div>
+      <br /><br />
+      <div class="form-group">
+        <label for="price">Price</label><br />
+        <input type="text" class="form-control" id="prd_price" name="price" />
+      </div>
+      <br /><br />
+      <div class="form-group">
+        <label for="thumbnail">Thumbnail</label><br />
+        <input
+          type="text"
+          class="form-control"
+          id="prd_thumbnail"
+          name="thumbnail"
+        /><br /><br />
+      </div>
+      <div class="form-group">
+        <label for="code">Code</label><br />
+        <input type="text" class="form-control" id="prd_code" name="code" />
+      </div>
+      <br /><br />
+      <div class="form-group">
+        <label for="stock">Stock</label><br />
+        <input type="text" class="form-control" id="prd_stock" name="stock" />
+      </div>
+      <br /><br />
+      <div class="form-group">
+        <label for="category">Category</label><br />
+        <input
+          type="text"
+          class="form-control"
+          id="prd_category"
+          name="category"
+        />
+      </div>
+      <br /><br />
+      <button
+        onClick="submitForm()"
+        type="submit"
+        class="btn btn-primary"
+      >Submit</button>
+      <hr />
+    </form>
+  </div>
+  <br />
+
+  <table class="table">
+    <thead>
+      <tr>
+        <th>title</th>
+        <th>price</th>
+        <th>status</th>
+        <th>code</th>
+        <th>stock</th>
+        <th>category</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody id="product_container">
+
+    </tbody>
+  </table>
+  <div
+    id="product_pages"
+    style="display: flex; align-items:center; justify-content:space-around"
+  >
+
+  </div>
 </div>
-<button onClick="purchase()">Purchase</button>
-<table>
-  <thead>
-    <tr>
-      <th>title</th>
-      <th>price</th>
-      <th>status</th>
-      <th>code</th>
-      <th>stock</th>
-      <th>category</th>
-      <th>Actions</th>
-    </tr>
-  </thead>
-  <tbody id="product_container">
-
-  </tbody>
-</table>
-<div
-  id="product_pages"
-  style="display: flex; align-items:center; justify-content:space-around"
->
-
-</div>
-
 <script src="/js/products.js"></script>
